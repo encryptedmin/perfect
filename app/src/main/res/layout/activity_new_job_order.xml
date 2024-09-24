@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Customer Search Bar -->
         <EditText
             android:id="@+id/searchCustomerBar"
             android:layout_width="match_parent"
@@ -19,12 +20,14 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_corner" />
 
+        <!-- Customer List View -->
         <ListView
             android:id="@+id/customerListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
+        <!-- Create New Customer Button -->
         <Button
             android:id="@+id/buttonCreateNewCustomer"
             android:layout_width="wrap_content"
@@ -36,6 +39,7 @@
             android:textStyle="bold"
             android:padding="12dp" />
 
+        <!-- Laundry Type Selection -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,6 +67,7 @@
                 android:text="Bedsheets (6kg/load)" />
         </RadioGroup>
 
+        <!-- Laundry Weight Input -->
         <EditText
             android:id="@+id/inputLaundryWeight"
             android:layout_width="match_parent"
@@ -72,25 +77,130 @@
             android:padding="12dp"
             android:layout_marginBottom="16dp" />
 
-        <CheckBox
-            android:id="@+id/checkboxExtraSoap"
+        <!-- Display Total Loads -->
+        <TextView
+            android:id="@+id/textTotalLoads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Extra Soap" />
+            android:text="Total Loads: 0"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
-        <CheckBox
-            android:id="@+id/checkboxFabricConditioner"
+        <!-- Add-ons Section -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fabric Conditioner" />
+            android:text="Add-ons"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-        <CheckBox
-            android:id="@+id/checkboxBleach"
+        <!-- Add-on: Extra Detergent -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bleach" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Extra Detergent"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonMinusDetergent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#FF5252" />
+            <TextView
+                android:id="@+id/textDetergentAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonPlusDetergent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#4CAF50" />
+        </LinearLayout>
 
+        <!-- Add-on: Fabric Conditioner -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fabric Conditioner"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonMinusConditioner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#FF5252" />
+            <TextView
+                android:id="@+id/textConditionerAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonPlusConditioner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#4CAF50" />
+        </LinearLayout>
 
+        <!-- Add-on: Bleach -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bleach"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonMinusBleach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#FF5252" />
+            <TextView
+                android:id="@+id/textBleachAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:layout_marginLeft="16dp"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/buttonPlusBleach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+"
+                android:layout_marginLeft="16dp"
+                android:backgroundTint="#4CAF50" />
+        </LinearLayout>
+
+        <!-- Total Price -->
         <TextView
             android:id="@+id/textTotalPrice"
             android:layout_width="wrap_content"
@@ -101,6 +211,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp" />
 
+        <!-- Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

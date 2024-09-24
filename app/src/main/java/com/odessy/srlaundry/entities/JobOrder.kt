@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class JobOrder(@PrimaryKey(autoGenerate = true) val id: Int = 0,
     val customerName: String,
     val weight: Double,
-    val loads: Double,
+    val loads: Int,
     val addOnDetergent: Int,
     val addOnFabricConditioner: Int,
     val addOnBleach: Int,
