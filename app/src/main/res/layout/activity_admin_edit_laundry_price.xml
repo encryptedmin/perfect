@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Laundry Prices"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Regular Price:"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/textViewCurrentRegularPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <EditText
+            android:id="@+id/editTextRegularPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update Regular Price"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Bed Sheet Price:"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/textViewCurrentBedSheetPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <EditText
+            android:id="@+id/editTextBedSheetPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update Bed Sheet Price"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Add-On Detergent Price:"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/textViewCurrentDetergentAddOnPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <EditText
+            android:id="@+id/editTextDetergentAddOn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update Add-On Detergent Price"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Add-On Fabric Conditioner Price:"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/textViewCurrentFabricConditionerAddOnPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <EditText
+            android:id="@+id/editTextFabricConditionerAddOn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update Add-On Fabric Conditioner Price"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Current Add-On Bleach Price:"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/textViewCurrentBleachAddOnPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0.00"
+            android:textSize="16sp"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"/>
+
+        <EditText
+            android:id="@+id/editTextBleachAddOn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Update Add-On Bleach Price"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text"
+            android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/buttonUpdatePrices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Prices"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="24dp"
+            android:padding="12dp" />
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:backgroundTint="#E40E0E"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:padding="12dp" />
+
+    </LinearLayout>
+</ScrollView>

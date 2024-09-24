@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/searchCustomerBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search for customer"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/rounded_corner" />
+
+        <ListView
+            android:id="@+id/customerListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/buttonCreateNewCustomer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Customer"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#4CAF50"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:padding="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Laundry Type"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupLaundryType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/radioRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regular (8kg/load)" />
+
+            <RadioButton
+                android:id="@+id/radioBedsheets"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bedsheets (6kg/load)" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/inputLaundryWeight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter laundry weight (kg)"
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <CheckBox
+            android:id="@+id/checkboxExtraSoap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Extra Soap" />
+
+        <CheckBox
+            android:id="@+id/checkboxFabricConditioner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fabric Conditioner" />
+
+        <CheckBox
+            android:id="@+id/checkboxBleach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bleach" />
+
+
+        <TextView
+            android:id="@+id/textTotalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: $0.00"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/buttonConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirm"
+                android:backgroundTint="#2196F3"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:padding="12dp"
+                android:enabled="false" />
+
+            <Button
+                android:id="@+id/buttonClearFields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear Fields"
+                android:backgroundTint="#FFC107"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:backgroundTint="#F44336"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:padding="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

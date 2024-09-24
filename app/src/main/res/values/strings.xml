@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">S&amp;R Laundry</string>
+
+    <string-array name="roles_array">
+        <item>Admin</item>
+        <item>User</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SRLaundry"
+        tools:targetApi="31">
+        <activity
+            android:name=".admin_edit_laundry_price"
+            android:exported="false" />
+        <activity
+            android:name=".admin_register"
+            android:exported="false" />
+        <activity
+            android:name=".new_customer"
+            android:exported="false" />
+        <activity
+            android:name=".new_job_order"
+            android:exported="false" />
+        <activity
+            android:name=".laundry_service"
+            android:exported="false" />
+        <activity
+            android:name=".admin_dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".ManageStoreItemsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateLaundryPriceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckLaundrySalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckStoreSalesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ModifyPromoMechanicsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ModifySmsMessageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin_registration"
+            android:exported="false" />
+        <activity
+            android:name=".user_store"
+            android:exported="false" />
+        <activity
+            android:name=".user_laundry"
+            android:exported="false" />
+        <activity
+            android:name=".user_dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

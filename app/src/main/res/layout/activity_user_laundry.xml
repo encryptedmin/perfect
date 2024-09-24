@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".user_laundry">
+
+    <EditText
+        android:id="@+id/searchBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search for job order by customer info"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_corner" />
+
+    <Button
+        android:id="@+id/buttonNewJobOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Job Order"
+        android:layout_below="@id/searchBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"/>
+
+    <ListView
+        android:id="@+id/activeLaundryList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonNewJobOrder"
+        android:layout_above="@id/buttonLaundryFinish"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/buttonLaundryFinish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/buttonBack"
+        android:text="Finish Laundry"
+        android:backgroundTint="#2196F3"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:enabled="false" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="Back"
+        android:backgroundTint="#FF5722"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"/>
+</RelativeLayout>

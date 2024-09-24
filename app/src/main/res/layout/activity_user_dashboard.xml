@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background"
+    android:gravity="center"
+    android:padding="16dp"
+    tools:context=".user_dashboard">
+
+    <ImageButton
+        android:id="@+id/buttonLaundryService"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Laundry Service"
+        android:src="@drawable/ic_laundry"
+        />
+
+    <TextView
+        android:id="@+id/labelLaundryService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonLaundryService"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Laundry Service"
+        android:textColor="#333333"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/buttonMiniStore"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/labelLaundryService"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
+        android:contentDescription="Mini Store"
+        android:src="@drawable/ic_store"
+        />
+
+    <TextView
+        android:id="@+id/labelMiniStore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonMiniStore"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Store"
+        android:textColor="#333333"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/buttonLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="32dp"
+        android:text="Logout"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#2196F3"
+        />
+
+
+
+</RelativeLayout>
