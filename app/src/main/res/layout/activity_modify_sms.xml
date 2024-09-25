@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white"
+    tools:context=".modify_sms">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modify SMS Notification"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Instruction Text -->
+    <TextView
+        android:id="@+id/instructionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit the SMS message below:"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/titleTextView"
+        android:layout_marginBottom="16dp" />
+
+    <!-- EditText for SMS message -->
+    <EditText
+        android:id="@+id/smsMessageEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter SMS message here"
+        android:background="@drawable/rounded_corner"
+        android:padding="12dp"
+        android:layout_marginTop="100dp"
+        android:inputType="textMultiLine"
+        android:minLines="4"
+        android:maxLines="6"
+        android:gravity="top|start"
+        android:textColor="@color/black" />
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorAccent"
+        android:layout_below="@id/smsMessageEditText"
+        android:layout_marginTop="24dp"
+        android:padding="16dp" />
+
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/confirmButton"
+        android:layout_marginTop="12dp"
+        android:padding="16dp" />
+
+</RelativeLayout>

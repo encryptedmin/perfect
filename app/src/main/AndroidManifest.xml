@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SRLaundry"
         tools:targetApi="31">
         <activity
+            android:name=".modify_sms"
+            android:exported="false" />
+        <activity
             android:name=".user_cart_item"
             android:exported="false" />
         <activity
