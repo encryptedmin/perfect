@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">S&amp;R Laundry</string>
+    <string name="total_price_format">Total: $%.2f</string>
+    <string name="laundry_price_not_found">No laundry prices found, using default values!</string>
+    <string name="job_order_created">Job order created successfully!</string>
+    <string name="bleach_amount_format"> %d</string>
+    <string name="detergent_amount_format"> %d</string>
+    <string name="fabric_conditioner_amount_format"> %d</string>
+    <string name="total_loads_format">Total Loads: %d</string>
 
     <string-array name="roles_array">
         <item>Admin</item>

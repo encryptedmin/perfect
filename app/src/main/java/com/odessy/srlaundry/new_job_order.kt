@@ -24,6 +24,7 @@ class new_job_order : AppCompatActivity() {
     private lateinit var radioGroupLaundryType: RadioGroup
     private lateinit var inputLaundryWeight: EditText
     private lateinit var textTotalPrice: TextView
+    private lateinit var textTotalLoads: TextView // New field for showing total loads
     private lateinit var buttonConfirm: Button
     private lateinit var buttonClearFields: Button
     private lateinit var buttonCancel: Button
@@ -47,6 +48,7 @@ class new_job_order : AppCompatActivity() {
         radioGroupLaundryType = findViewById(R.id.radioGroupLaundryType)
         inputLaundryWeight = findViewById(R.id.inputLaundryWeight)
         textTotalPrice = findViewById(R.id.textTotalPrice)
+        textTotalLoads = findViewById(R.id.textTotalLoads) // Initialize textTotalLoads view
         buttonConfirm = findViewById(R.id.buttonConfirm)
         buttonClearFields = findViewById(R.id.buttonClearFields)
         buttonCancel = findViewById(R.id.buttonCancel)
@@ -108,7 +110,12 @@ class new_job_order : AppCompatActivity() {
 
         // Confirm button functionality (create JobOrder)
         buttonConfirm.setOnClickListener {
-            createJobOrder()
+            // Launch a coroutine to ensure the JobOrder is created before redirecting
+            lifecycleScope.launch {
+                createJobOrder() // Wait until job order is created
+                val intent = Intent(this@new_job_order, user_laundry::class.java)
+                startActivity(intent) // Redirect after job order creation
+            }
         }
 
         // Setup add-on buttons
@@ -118,7 +125,7 @@ class new_job_order : AppCompatActivity() {
     private fun loadLaundryPrices() {
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
-            val fetchedLaundryPrice = db.laundryPriceDao().getLaundryPrice() // Assuming you have a getPrice method
+            val fetchedLaundryPrice = db.laundryPriceDao().getLaundryPrice()
 
             withContext(Dispatchers.Main) {
                 if (fetchedLaundryPrice != null) {
@@ -127,7 +134,7 @@ class new_job_order : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this@new_job_order,
-                        "No laundry prices found, using default values!",
+                        getString(R.string.laundry_price_not_found),
                         Toast.LENGTH_LONG
                     ).show()
                     laundryPrice = LaundryPrice(
@@ -146,7 +153,7 @@ class new_job_order : AppCompatActivity() {
     private fun searchCustomer(query: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
-            val customers = db.customerDao().searchCustomers(query) // Implement searchCustomers in CustomerDao
+            val customers = db.customerDao().searchCustomers(query)
             val adapter = ArrayAdapter(this@new_job_order, android.R.layout.simple_list_item_1, customers)
 
             withContext(Dispatchers.Main) {
@@ -168,9 +175,15 @@ class new_job_order : AppCompatActivity() {
         val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
         val loads = Math.ceil(weight / loadSize).toInt() // Calculate total loads
 
-        totalPrice = loads * pricePerLoad
+        totalPrice = (loads * pricePerLoad) +
+                (addOnBleachCount * laundryPrice.addOnBleach) +
+                (addOnDetergentCount * laundryPrice.addOnDetergent) +
+                (addOnFabricConditionerCount * laundryPrice.addOnFabricConditioner)
 
-        textTotalPrice.text = "Total: $$totalPrice"
+        // Set total price and total loads
+        textTotalPrice.text = getString(R.string.total_price_format, totalPrice)
+        textTotalLoads.text = getString(R.string.total_loads_format, loads) // Set number of loads
+
         Log.d("DEBUG", "Weight: $weight, Loads: $loads, Total Price: $totalPrice")
     }
 
@@ -179,18 +192,19 @@ class new_job_order : AppCompatActivity() {
         inputLaundryWeight.text.clear()
         buttonConfirm.isEnabled = false
         selectedCustomer = null
-        textTotalPrice.text = "Total: $0.00"
+        textTotalPrice.text = getString(R.string.total_price_format, 0.0)
+        textTotalLoads.text = getString(R.string.total_loads_format, 0) // Reset loads to 0
         addOnBleachCount = 0
         addOnDetergentCount = 0
         addOnFabricConditionerCount = 0
-        updateAddOnText() // Update add-on text to reflect cleared values
+        updateAddOnText()
     }
 
-    private fun createJobOrder() {
+    // Suspend function to ensure job order creation completes before redirection
+    private suspend fun createJobOrder() {
         val weight = inputLaundryWeight.text.toString().toDoubleOrNull() ?: 0.0
         val loads = Math.ceil(weight / (if (selectedLaundryType == "Regular") 8.0 else 6.0)).toInt()
 
-        // Create a JobOrder object
         val jobOrder = JobOrder(
             customerName = selectedCustomer?.name ?: "",
             weight = weight,
@@ -201,14 +215,16 @@ class new_job_order : AppCompatActivity() {
             totalPrice = totalPrice
         )
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        // Perform database operation in IO dispatcher
+        withContext(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
-            db.jobOrderDao().insertJobOrder(jobOrder) // Implement insertJobOrder in JobOrderDao
+            db.jobOrderDao().insertJobOrder(jobOrder)
+        }
 
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@new_job_order, "Job order created successfully!", Toast.LENGTH_SHORT).show()
-                clearFields() // Clear fields after creating job order
-            }
+        // Update UI or show a Toast message on the Main thread after job order is created
+        withContext(Dispatchers.Main) {
+            Toast.makeText(this@new_job_order, getString(R.string.job_order_created), Toast.LENGTH_SHORT).show()
+            clearFields()
         }
     }
 
@@ -227,45 +243,33 @@ class new_job_order : AppCompatActivity() {
 
         findViewById<Button>(R.id.buttonPlusDetergent).setOnClickListener {
             addOnDetergentCount++
-            updateAddOnDetergentText()
+            updateAddOnText()
         }
+
         findViewById<Button>(R.id.buttonMinusDetergent).setOnClickListener {
             if (addOnDetergentCount > 0) {
                 addOnDetergentCount--
-                updateAddOnDetergentText()
+                updateAddOnText()
             }
         }
 
         findViewById<Button>(R.id.buttonPlusConditioner).setOnClickListener {
             addOnFabricConditionerCount++
-            updateAddOnFabricConditionerText()
+            updateAddOnText()
         }
+
         findViewById<Button>(R.id.buttonMinusConditioner).setOnClickListener {
             if (addOnFabricConditionerCount > 0) {
                 addOnFabricConditionerCount--
-                updateAddOnFabricConditionerText()
+                updateAddOnText()
             }
         }
     }
 
     private fun updateAddOnText() {
-        findViewById<TextView>(R.id.textBleachAmount).text = "Bleach: $addOnBleachCount"
-        findViewById<TextView>(R.id.textDetergentAmount).text = "Detergent: $addOnDetergentCount"
-        findViewById<TextView>(R.id.textConditionerAmount).text = "Fabric Conditioner: $addOnFabricConditionerCount"
-        calculateTotalPrice() // Recalculate total price whenever add-on counts change
-    }
-    private fun updateAddOnBleachText() {
-        findViewById<TextView>(R.id.textBleachAmount).text = "Detergent: $addOnBleachCount"
-        calculateTotalPrice() // Recalculate total price
-    }
-
-    private fun updateAddOnDetergentText() {
-        findViewById<TextView>(R.id.textDetergentAmount).text = "Detergent: $addOnDetergentCount"
-        calculateTotalPrice() // Recalculate total price
-    }
-
-    private fun updateAddOnFabricConditionerText() {
-        findViewById<TextView>(R.id.textConditionerAmount).text = "Fabric Conditioner: $addOnFabricConditionerCount"
-        calculateTotalPrice() // Recalculate total price
+        findViewById<TextView>(R.id.textBleachAmount).text = getString(R.string.bleach_amount_format, addOnBleachCount)
+        findViewById<TextView>(R.id.textDetergentAmount).text = getString(R.string.detergent_amount_format, addOnDetergentCount)
+        findViewById<TextView>(R.id.textConditionerAmount).text = getString(R.string.fabric_conditioner_amount_format, addOnFabricConditionerCount)
+        calculateTotalPrice()
     }
 }

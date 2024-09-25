@@ -77,7 +77,7 @@
             android:padding="12dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Display Total Loads -->
+
         <TextView
             android:id="@+id/textTotalLoads"
             android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Extra Detergent"
+                android:text="Detergent"
                 android:textSize="16sp" />
             <Button
                 android:id="@+id/buttonMinusDetergent"
@@ -120,7 +120,8 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:layout_marginLeft="16dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:gravity="center"/>
             <Button
                 android:id="@+id/buttonPlusDetergent"
                 android:layout_width="wrap_content"
@@ -130,7 +131,7 @@
                 android:backgroundTint="#4CAF50" />
         </LinearLayout>
 
-        <!-- Add-on: Fabric Conditioner -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -155,7 +156,8 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:layout_marginLeft="16dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:gravity="center"/>
             <Button
                 android:id="@+id/buttonPlusConditioner"
                 android:layout_width="wrap_content"
@@ -190,7 +192,8 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:layout_marginLeft="16dp"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:gravity="center"/>
             <Button
                 android:id="@+id/buttonPlusBleach"
                 android:layout_width="wrap_content"
