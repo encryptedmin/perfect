@@ -18,6 +18,9 @@ interface JobOrderDao {
     @Query("SELECT * FROM JobOrder WHERE id = :id")
     suspend fun getJobOrderById(id: Int): JobOrder?
 
-    @Query("SELECT * FROM JobOrder")
-    suspend fun getAllJobOrders(): List<JobOrder>
+    @Query("SELECT * FROM JobOrder WHERE isActive = 1")
+    suspend fun getActiveJobOrders(): List<JobOrder> // Fetch only active job orders
+
+    
+
 }

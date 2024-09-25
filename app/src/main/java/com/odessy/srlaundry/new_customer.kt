@@ -46,7 +46,12 @@ class new_customer : AppCompatActivity() {
                     db.customerDao().insertCustomer(newCustomer)
                     runOnUiThread {
                         Toast.makeText(this@new_customer, "Customer added successfully!", Toast.LENGTH_SHORT).show()
-                        clearInputs() // Clear inputs after saving
+
+                        // Redirect back to new_job_order after saving
+                        val intent = Intent(this@new_customer, new_job_order::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Ensures the previous activity isn't recreated
+                        startActivity(intent)
+                        finish() // Close the current activity
                     }
                 }
             } else {

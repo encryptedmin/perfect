@@ -11,6 +11,7 @@ data class JobOrder(@PrimaryKey(autoGenerate = true) val id: Int = 0,
     val addOnDetergent: Int,
     val addOnFabricConditioner: Int,
     val addOnBleach: Int,
-    val totalPrice: Double
-
+    val totalPrice: Double,
+    var isActive: Boolean = true, // New column to track active/inactive status
+    val createdDate: Long = System.currentTimeMillis() // Store the job creation timestamp
     )
