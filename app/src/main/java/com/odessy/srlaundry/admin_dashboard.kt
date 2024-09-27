@@ -26,6 +26,13 @@ class admin_dashboard : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val buttonManageStoreItems: Button = findViewById(R.id.buttonManageStoreItems)
+        buttonManageStoreItems.setOnClickListener {
+
+            val intent = Intent(this@admin_dashboard, store_items::class.java)
+            startActivity(intent)
+        }
+
 val buttonUpdateLaundryPrice: Button = findViewById(R.id.buttonUpdateLaundryPrice)
         buttonUpdateLaundryPrice.setOnClickListener{
             val intent = Intent(this@admin_dashboard, admin_edit_laundry_price::class.java)
