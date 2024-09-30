@@ -42,5 +42,9 @@ val buttonModifySmsMessage: Button = findViewById(R.id.buttonModifySmsMessage)
         buttonModifySmsMessage.setOnClickListener { val intent = Intent(this@admin_dashboard, modify_sms::class.java)
         startActivity(intent)
         }
+        val buttonCheckLaundrySales: Button = findViewById(R.id.buttonCheckLaundrySales)
+        buttonCheckLaundrySales.setOnClickListener { val intent = Intent(this@admin_dashboard, activity_admin_sales::class.java)
+        startActivity(intent)
+        }
     }
 }

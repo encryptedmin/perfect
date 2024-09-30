@@ -87,10 +87,7 @@ class user_laundry : AppCompatActivity() {
 
                     // Create a list to hold formatted strings for each job order
                     val jobOrderDetails = activeJobs.map { jobOrder ->
-                        // Determine laundry type based on load size
-                        val laundryType = if (jobOrder.loads == 8) "Regular" else "Bedsheets"
-
-                        // Format the date
+                        val laundryType = jobOrder.laundryType // Get laundry type directly from the job order
                         val formattedDate = dateFormat.format(Date(jobOrder.createdDate))
 
                         // Build the display string with customer name, laundry type, loads, total price, and date
@@ -114,4 +111,5 @@ class user_laundry : AppCompatActivity() {
             }
         }
     }
+
 }

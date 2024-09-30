@@ -24,7 +24,7 @@ class new_job_order : AppCompatActivity() {
     private lateinit var radioGroupLaundryType: RadioGroup
     private lateinit var inputLaundryWeight: EditText
     private lateinit var textTotalPrice: TextView
-    private lateinit var textTotalLoads: TextView // New field for showing total loads
+    private lateinit var textTotalLoads: TextView // Field for showing total loads
     private lateinit var buttonConfirm: Button
     private lateinit var buttonClearFields: Button
     private lateinit var buttonCancel: Button
@@ -42,6 +42,28 @@ class new_job_order : AppCompatActivity() {
         setContentView(R.layout.activity_new_job_order)
 
         // Initialize views
+        initializeViews()
+
+        // Load laundry prices from the database
+        loadLaundryPrices()
+
+        // Search customer functionality
+        setupCustomerSearch()
+
+        // Radio group for laundry type selection
+        setupLaundryTypeSelection()
+
+        // Laundry weight input
+        setupWeightInput()
+
+        // Button functionalities
+        setupButtonFunctions()
+
+        // Setup add-on buttons
+        setupAddOnButtons()
+    }
+
+    private fun initializeViews() {
         searchCustomerBar = findViewById(R.id.searchCustomerBar)
         customerListView = findViewById(R.id.customerListView)
         buttonCreateNewCustomer = findViewById(R.id.buttonCreateNewCustomer)
@@ -54,11 +76,9 @@ class new_job_order : AppCompatActivity() {
         buttonCancel = findViewById(R.id.buttonCancel)
 
         buttonConfirm.isEnabled = false // Disable Confirm button initially
+    }
 
-        // Load laundry prices from the database
-        loadLaundryPrices()
-
-        // Search customer functionality
+    private fun setupCustomerSearch() {
         searchCustomerBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 searchCustomer(s.toString())
@@ -69,16 +89,12 @@ class new_job_order : AppCompatActivity() {
         })
 
         customerListView.setOnItemClickListener { _, _, position, _ ->
-            selectedCustomer = customerListView.getItemAtPosition(position) as Customer
-            buttonConfirm.isEnabled = true // Enable Confirm button once a customer is selected
+            selectedCustomer = customerListView.getItemAtPosition(position) as? Customer
+            buttonConfirm.isEnabled = selectedCustomer != null // Enable Confirm button once a customer is selected
         }
+    }
 
-        // Create new customer button functionality
-        buttonCreateNewCustomer.setOnClickListener {
-            startActivity(Intent(this@new_job_order, new_customer::class.java)) // Start new customer activity
-        }
-
-        // Radio group for laundry type selection
+    private fun setupLaundryTypeSelection() {
         radioGroupLaundryType.setOnCheckedChangeListener { _, checkedId ->
             selectedLaundryType = when (checkedId) {
                 R.id.radioRegular -> "Regular"
@@ -87,8 +103,9 @@ class new_job_order : AppCompatActivity() {
             }
             calculateTotalPrice()
         }
+    }
 
-        // Laundry weight input
+    private fun setupWeightInput() {
         inputLaundryWeight.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 calculateTotalPrice()
@@ -97,29 +114,28 @@ class new_job_order : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
+    }
 
-        // Cancel button functionality
+    private fun setupButtonFunctions() {
+        buttonCreateNewCustomer.setOnClickListener {
+            startActivity(Intent(this@new_job_order, new_customer::class.java)) // Start new customer activity
+        }
+
         buttonCancel.setOnClickListener {
             startActivity(Intent(this@new_job_order, user_laundry::class.java))
         }
 
-        // Clear fields button functionality
         buttonClearFields.setOnClickListener {
             clearFields()
         }
 
-        // Confirm button functionality (create JobOrder)
         buttonConfirm.setOnClickListener {
             // Launch a coroutine to ensure the JobOrder is created before redirecting
             lifecycleScope.launch {
                 createJobOrder() // Wait until job order is created
-                val intent = Intent(this@new_job_order, user_laundry::class.java)
-                startActivity(intent) // Redirect after job order creation
+                startActivity(Intent(this@new_job_order, user_laundry::class.java)) // Redirect after job order creation
             }
         }
-
-        // Setup add-on buttons
-        setupAddOnButtons()
     }
 
     private fun loadLaundryPrices() {
@@ -128,24 +144,21 @@ class new_job_order : AppCompatActivity() {
             val fetchedLaundryPrice = db.laundryPriceDao().getLaundryPrice()
 
             withContext(Dispatchers.Main) {
-                if (fetchedLaundryPrice != null) {
-                    laundryPrice = fetchedLaundryPrice
-                    calculateTotalPrice()
-                } else {
+                laundryPrice = fetchedLaundryPrice ?: LaundryPrice(
+                    regular = 0.0,
+                    bedSheet = 0.0,
+                    addOnDetergent = 0.0,
+                    addOnFabricConditioner = 0.0,
+                    addOnBleach = 0.0
+                )
+                if (fetchedLaundryPrice == null) {
                     Toast.makeText(
                         this@new_job_order,
                         getString(R.string.laundry_price_not_found),
                         Toast.LENGTH_LONG
                     ).show()
-                    laundryPrice = LaundryPrice(
-                        regular = 0.0,
-                        bedSheet = 0.0,
-                        addOnDetergent = 0.0,
-                        addOnFabricConditioner = 0.0,
-                        addOnBleach = 0.0
-                    )
-                    calculateTotalPrice()
                 }
+                calculateTotalPrice()
             }
         }
     }
@@ -203,7 +216,8 @@ class new_job_order : AppCompatActivity() {
     // Suspend function to ensure job order creation completes before redirection
     private suspend fun createJobOrder() {
         val weight = inputLaundryWeight.text.toString().toDoubleOrNull() ?: 0.0
-        val loads = Math.ceil(weight / (if (selectedLaundryType == "Regular") 8.0 else 6.0)).toInt()
+        val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
+        val loads = Math.ceil(weight / loadSize).toInt()
 
         val jobOrder = JobOrder(
             customerName = selectedCustomer?.name ?: "",
@@ -212,7 +226,8 @@ class new_job_order : AppCompatActivity() {
             addOnDetergent = addOnDetergentCount,
             addOnFabricConditioner = addOnFabricConditionerCount,
             addOnBleach = addOnBleachCount,
-            totalPrice = totalPrice
+            totalPrice = totalPrice,
+            laundryType = selectedLaundryType // Set the selected laundry type
         )
 
         // Perform database operation in IO dispatcher

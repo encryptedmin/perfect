@@ -7,7 +7,12 @@
     <string name="detergent_amount_format"> %d</string>
     <string name="fabric_conditioner_amount_format"> %d</string>
     <string name="total_loads_format">Total Loads: %d</string>
-
+    <string name="total_income">₱%1$s</string>
+    <string name="total_regular_loads">%1$s Loads</string>
+    <string name="detergent_addons">%1$s Detergent Add-ons</string>>
+    <string name="selected_laundry_type_format">Selected Laundry Type: %1$s</string>
+    <string name="fabric_conditioner_addons">%1$s Fabric Conditioner Add-ons</string>
+    <string name="bleach_addons">%1$s Bleach Add-ons</string>
     <string-array name="roles_array">
         <item>Admin</item>
         <item>User</item>
