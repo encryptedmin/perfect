@@ -48,7 +48,7 @@ class ActivityAdminSales : AppCompatActivity() {
         val dailyButton: Button = findViewById(R.id.btn_daily)
         val weeklyButton: Button = findViewById(R.id.btn_weekly)
         val monthlyButton: Button = findViewById(R.id.btn_monthly)
-
+        val backButton: Button = findViewById(R.id.btn_back)
         // Set click listeners to set date ranges based on user selection
         dailyButton.setOnClickListener {
             setDatesForDaily()
@@ -66,6 +66,10 @@ class ActivityAdminSales : AppCompatActivity() {
             setDatesForMonthly()
             fetchSalesData(regularSalesTextView, regularLoadsTextView, regularDetergentTextView, regularBleachTextView, regularFabricConditionerTextView,
                 bedsheetsSalesTextView, bedsheetsLoadsTextView, bedsheetsDetergentTextView, bedsheetsBleachTextView, bedsheetsFabricConditionerTextView)
+        }
+
+        backButton.setOnClickListener {
+            finish()
         }
 
         // Initial load (default to daily)

@@ -227,7 +227,8 @@ class NewJobOrder : AppCompatActivity() {
             addOnFabricConditioner = addOnFabricConditionerCount,
             addOnBleach = addOnBleachCount,
             totalPrice = totalPrice,
-            laundryType = selectedLaundryType // Set the selected laundry type
+            laundryType = selectedLaundryType,
+            customerPhone = selectedCustomer?.phone ?: ""
         )
 
         // Perform database operation in IO dispatcher

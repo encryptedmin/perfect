@@ -73,11 +73,11 @@ abstract class AppDatabase : RoomDatabase() {
 
             // Insert initial laundry prices
             val initialPrices = LaundryPrice(
-                regular = 10.0, // Set your default value
-                bedSheet = 15.0, // Set your default value
-                addOnDetergent = 2.0, // Set your default value
-                addOnFabricConditioner = 2.0, // Set your default value
-                addOnBleach = 1.0 // Set your default value
+                regular = 180.0,
+                bedSheet = 200.0,
+                addOnDetergent = 12.0,
+                addOnFabricConditioner = 12.0,
+                addOnBleach = 12.0
             )
             laundryPriceDao.insertLaundryPrice(initialPrices)
         }
