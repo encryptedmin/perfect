@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class new_job_order : AppCompatActivity() {
+class NewJobOrder : AppCompatActivity() {
 
     private lateinit var searchCustomerBar: EditText
     private lateinit var customerListView: ListView
@@ -118,11 +118,11 @@ class new_job_order : AppCompatActivity() {
 
     private fun setupButtonFunctions() {
         buttonCreateNewCustomer.setOnClickListener {
-            startActivity(Intent(this@new_job_order, new_customer::class.java)) // Start new customer activity
+            startActivity(Intent(this@NewJobOrder, NewCustomer::class.java)) // Start new customer activity
         }
 
         buttonCancel.setOnClickListener {
-            startActivity(Intent(this@new_job_order, user_laundry::class.java))
+            startActivity(Intent(this@NewJobOrder, UserLaundry::class.java))
         }
 
         buttonClearFields.setOnClickListener {
@@ -133,14 +133,14 @@ class new_job_order : AppCompatActivity() {
             // Launch a coroutine to ensure the JobOrder is created before redirecting
             lifecycleScope.launch {
                 createJobOrder() // Wait until job order is created
-                startActivity(Intent(this@new_job_order, user_laundry::class.java)) // Redirect after job order creation
+                startActivity(Intent(this@NewJobOrder, UserLaundry::class.java)) // Redirect after job order creation
             }
         }
     }
 
     private fun loadLaundryPrices() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
+            val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
             val fetchedLaundryPrice = db.laundryPriceDao().getLaundryPrice()
 
             withContext(Dispatchers.Main) {
@@ -153,7 +153,7 @@ class new_job_order : AppCompatActivity() {
                 )
                 if (fetchedLaundryPrice == null) {
                     Toast.makeText(
-                        this@new_job_order,
+                        this@NewJobOrder,
                         getString(R.string.laundry_price_not_found),
                         Toast.LENGTH_LONG
                     ).show()
@@ -165,9 +165,9 @@ class new_job_order : AppCompatActivity() {
 
     private fun searchCustomer(query: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
+            val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
             val customers = db.customerDao().searchCustomers(query)
-            val adapter = ArrayAdapter(this@new_job_order, android.R.layout.simple_list_item_1, customers)
+            val adapter = ArrayAdapter(this@NewJobOrder, android.R.layout.simple_list_item_1, customers)
 
             withContext(Dispatchers.Main) {
                 customerListView.adapter = adapter
@@ -232,13 +232,13 @@ class new_job_order : AppCompatActivity() {
 
         // Perform database operation in IO dispatcher
         withContext(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(this@new_job_order, lifecycleScope)
+            val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
             db.jobOrderDao().insertJobOrder(jobOrder)
         }
 
         // Update UI or show a Toast message on the Main thread after job order is created
         withContext(Dispatchers.Main) {
-            Toast.makeText(this@new_job_order, getString(R.string.job_order_created), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@NewJobOrder, getString(R.string.job_order_created), Toast.LENGTH_SHORT).show()
             clearFields()
         }
     }

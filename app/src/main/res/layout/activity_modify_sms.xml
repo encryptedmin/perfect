@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/white"
-    tools:context=".modify_sms">
+    tools:context=".ModifySms">
 
     <TextView
         android:id="@+id/titleTextView"

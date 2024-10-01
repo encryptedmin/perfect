@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.odessy.srlaundry.databinding.ActivityStoreItemsBinding
 import com.odessy.srlaundry.entities.StoreItem
 
-class store_items : AppCompatActivity() {
+class StoreItems : AppCompatActivity() {
 
     private lateinit var binding: ActivityStoreItemsBinding  // View Binding instance
     private val storeItemViewModel: StoreItemsViewModel by viewModels()
@@ -56,7 +56,7 @@ class store_items : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val query = s.toString()
-                storeItemViewModel.searchStoreItems(query).observe(this@store_items, { items ->
+                storeItemViewModel.searchStoreItems(query).observe(this@StoreItems, { items ->
                     adapter.submitList(items)
                 })
             }

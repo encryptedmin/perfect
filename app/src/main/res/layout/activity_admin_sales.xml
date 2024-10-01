@@ -1,239 +1,140 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp"
     android:background="@android:color/white"
     tools:context=".activity_admin_sales">
-    <TextView
-        android:id="@+id/salesHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sales Overview"
-        android:textSize="24sp"
-        android:textColor="#3F51B5"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="16dp" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:paddingBottom="16dp">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/dailyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Daily"
-            android:backgroundTint="#4CAF50"
-            android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/weeklyButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Weekly"
-            android:backgroundTint="#FFC107"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="8dp">
 
-        <Button
-            android:id="@+id/monthlyButton"
-            android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btn_daily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daily" />
+
+            <Button
+                android:id="@+id/btn_weekly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Weekly" />
+
+            <Button
+                android:id="@+id/btn_monthly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Monthly" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Monthly"
-            android:backgroundTint="#03A9F4"
-            android:textColor="@android:color/white" />
+            android:text="Regular Laundry Sales"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+
+            <TextView
+                android:id="@+id/tv_regular_total_sales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Sales: $0.00" />
+
+
+            <TextView
+                android:id="@+id/tv_regular_total_loads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Loads: 0" />
+
+
+            <TextView
+                android:id="@+id/tv_regular_addon_detergent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Detergent Add-ons: 0" />
+
+            <TextView
+                android:id="@+id/tv_regular_addon_bleach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bleach Add-ons: 0" />
+
+            <TextView
+                android:id="@+id/tv_regular_addon_fabric_conditioner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fabric Conditioner Add-ons: 0" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bedsheets Laundry Sales"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+
+            <TextView
+                android:id="@+id/tv_bedsheets_total_sales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Sales: $0.00" />
+
+
+            <TextView
+                android:id="@+id/tv_bedsheets_total_loads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Total Loads: 0" />
+
+
+            <TextView
+                android:id="@+id/tv_bedsheets_addon_detergent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Detergent Add-ons: 0" />
+
+            <TextView
+                android:id="@+id/tv_bedsheets_addon_bleach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bleach Add-ons: 0" />
+
+            <TextView
+                android:id="@+id/tv_bedsheets_addon_fabric_conditioner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fabric Conditioner Add-ons: 0" />
+        </LinearLayout>
+
     </LinearLayout>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/totalIncomeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Income"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/totalIncomeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="₱0.00"
-                android:textSize="20sp"
-                android:textColor="#4CAF50"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/regularLoadsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Regular Loads"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/regularLoadsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 Loads"
-                android:textSize="20sp"
-                android:textColor="#2196F3"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/bedsheetLoadsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Bedsheet Loads"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/bedsheetLoadsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 Bedsheets"
-                android:textSize="20sp"
-                android:textColor="#2196F3"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-
-            <TextView
-                android:id="@+id/detergentAddonsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Detergent Add-ons"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/detergentAddonsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 Detergent Add-ons"
-                android:textSize="20sp"
-                android:textColor="#FF9800"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-
-
-            <TextView
-                android:id="@+id/fabricConditionerAddonsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Fabric Conditioner Add-ons"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/fabricConditionerAddonsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 Fabric Conditioner Add-ons"
-                android:textSize="20sp"
-                android:textColor="#FF9800"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-
-
-            <TextView
-                android:id="@+id/bleachAddonsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Bleach Add-ons"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/bleachAddonsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0 Bleach Add-ons"
-                android:textSize="20sp"
-                android:textColor="#FF9800"
-                android:textStyle="bold"
-                android:layout_marginTop="4dp" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
+</ScrollView>

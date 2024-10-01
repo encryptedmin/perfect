@@ -13,7 +13,7 @@ import android.content.Intent
 import java.text.SimpleDateFormat
 import java.util.*
 
-class user_laundry : AppCompatActivity() {
+class UserLaundry : AppCompatActivity() {
 
     private lateinit var listView: ListView
     private lateinit var finishButton: Button
@@ -45,7 +45,7 @@ class user_laundry : AppCompatActivity() {
         // Set up button to start a new job order
         newJobOrderButton.setOnClickListener {
             // Redirect to new job order activity
-            startActivity(Intent(this@user_laundry, new_job_order::class.java))
+            startActivity(Intent(this@UserLaundry, NewJobOrder::class.java))
         }
 
         // Set up "Finish Laundry" button functionality
@@ -58,7 +58,7 @@ class user_laundry : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         // Show a toast message
-                        Toast.makeText(this@user_laundry, "Laundry Finished!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@UserLaundry, "Laundry Finished!", Toast.LENGTH_SHORT).show()
 
                         // Refresh the list of active job orders
                         finishButton.isEnabled = false // Disable the button again
@@ -70,7 +70,7 @@ class user_laundry : AppCompatActivity() {
 
         // Set up "Back" button functionality
         backButton.setOnClickListener {
-            val intent = Intent(this@user_laundry, user_dashboard::class.java)
+            val intent = Intent(this@UserLaundry, UserDashboard::class.java)
             startActivity(intent)
         }
     }
@@ -95,7 +95,7 @@ class user_laundry : AppCompatActivity() {
                     }
 
                     // Set up the ListView adapter with the formatted job order details
-                    val adapter = ArrayAdapter(this@user_laundry, android.R.layout.simple_list_item_1, jobOrderDetails)
+                    val adapter = ArrayAdapter(this@UserLaundry, android.R.layout.simple_list_item_1, jobOrderDetails)
                     listView.adapter = adapter
 
                     // Set item click listener to select a job order
@@ -105,7 +105,7 @@ class user_laundry : AppCompatActivity() {
                     }
                 } else {
                     // If no active jobs, show a message and clear the ListView
-                    Toast.makeText(this@user_laundry, "No active laundry jobs", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@UserLaundry, "No active laundry jobs", Toast.LENGTH_SHORT).show()
                     listView.adapter = null
                 }
             }

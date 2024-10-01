@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 
-class admin_dashboard : AppCompatActivity() {
+class AdminDashboard : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -14,7 +14,7 @@ class admin_dashboard : AppCompatActivity() {
 
         val buttonRegisterAccount: Button = findViewById(R.id.buttonRegisterAccount)
         buttonRegisterAccount.setOnClickListener {
-            val intent = Intent(this@admin_dashboard, admin_register::class.java)
+            val intent = Intent(this@AdminDashboard, AdminRegister::class.java)
             startActivity(intent)
         }
 
@@ -29,21 +29,21 @@ class admin_dashboard : AppCompatActivity() {
         val buttonManageStoreItems: Button = findViewById(R.id.buttonManageStoreItems)
         buttonManageStoreItems.setOnClickListener {
 
-            val intent = Intent(this@admin_dashboard, store_items::class.java)
+            val intent = Intent(this@AdminDashboard, StoreItems::class.java)
             startActivity(intent)
         }
 
 val buttonUpdateLaundryPrice: Button = findViewById(R.id.buttonUpdateLaundryPrice)
         buttonUpdateLaundryPrice.setOnClickListener{
-            val intent = Intent(this@admin_dashboard, admin_edit_laundry_price::class.java)
+            val intent = Intent(this@AdminDashboard, AdminEditLaundryPrice::class.java)
             startActivity(intent)
         }
 val buttonModifySmsMessage: Button = findViewById(R.id.buttonModifySmsMessage)
-        buttonModifySmsMessage.setOnClickListener { val intent = Intent(this@admin_dashboard, modify_sms::class.java)
+        buttonModifySmsMessage.setOnClickListener { val intent = Intent(this@AdminDashboard, ModifySms::class.java)
         startActivity(intent)
         }
         val buttonCheckLaundrySales: Button = findViewById(R.id.buttonCheckLaundrySales)
-        buttonCheckLaundrySales.setOnClickListener { val intent = Intent(this@admin_dashboard, activity_admin_sales::class.java)
+        buttonCheckLaundrySales.setOnClickListener { val intent = Intent(this@AdminDashboard, ActivityAdminSales::class.java)
         startActivity(intent)
         }
     }

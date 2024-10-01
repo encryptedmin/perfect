@@ -15,7 +15,7 @@ import com.odessy.srlaundry.entities.Accounts
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class admin_register : AppCompatActivity() {
+class AdminRegister : AppCompatActivity() {
 
     private lateinit var usernameInput: EditText
     private lateinit var passwordInput: EditText
@@ -67,7 +67,7 @@ class admin_register : AppCompatActivity() {
         // Handle Cancel button click
         buttonCancelRegister.setOnClickListener {
             // Redirect to admin_dashboard activity
-            val intent = Intent(this@admin_register, admin_dashboard::class.java)
+            val intent = Intent(this@AdminRegister, AdminDashboard::class.java)
             startActivity(intent)
             finish() // Optionally close the registration activity
         }
@@ -79,7 +79,7 @@ class admin_register : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             db.accountsDao().insert(account) // Assuming you have an insert method in your AccountsDao
             runOnUiThread {
-                Toast.makeText(this@admin_register, "Registration successful!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminRegister, "Registration successful!", Toast.LENGTH_SHORT).show()
                 finish() // Close the registration activity
             }
         }

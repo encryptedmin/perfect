@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
-class user_dashboard : AppCompatActivity() {
+class UserDashboard : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,19 +19,19 @@ class user_dashboard : AppCompatActivity() {
 
         // Set up intent for Laundry Service button
         laundryServiceButton.setOnClickListener {
-            val intent = Intent(this@user_dashboard, user_laundry::class.java)
+            val intent = Intent(this@UserDashboard, UserLaundry::class.java)
             startActivity(intent)
         }
 
         // Set up intent for Store button
         storeButton.setOnClickListener {
-            val intent = Intent(this@user_dashboard, user_store::class.java)
+            val intent = Intent(this@UserDashboard, UserStore::class.java)
             startActivity(intent)
         }
 
         // Set up intent for Logout button
         logoutButton.setOnClickListener {
-            val intent = Intent(this@user_dashboard, MainActivity::class.java)
+            val intent = Intent(this@UserDashboard, MainActivity::class.java)
             // Clear the back stack to prevent navigating back to the dashboard
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

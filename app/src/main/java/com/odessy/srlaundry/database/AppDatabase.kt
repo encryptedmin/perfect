@@ -82,7 +82,6 @@ abstract class AppDatabase : RoomDatabase() {
             laundryPriceDao.insertLaundryPrice(initialPrices)
         }
 
-
-        }
     }
+}
 

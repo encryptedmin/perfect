@@ -48,11 +48,11 @@ class MainActivity : AppCompatActivity() {
                         if (account != null) {
                             // Check the role of the account and redirect accordingly
                             if (account.role == "admin") {
-                                val intent = Intent(this@MainActivity, admin_dashboard::class.java)
+                                val intent = Intent(this@MainActivity, AdminDashboard::class.java)
                                 startActivity(intent)
                                 finish()
                             } else if (account.role == "user") {
-                                val intent = Intent(this@MainActivity, user_dashboard::class.java)
+                                val intent = Intent(this@MainActivity, UserDashboard::class.java)
                                 startActivity(intent)
                                 finish()
                             }

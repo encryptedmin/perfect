@@ -10,67 +10,42 @@ import kotlinx.coroutines.withContext
 class SalesViewModel(private val jobOrderDao: JobOrderDao) : ViewModel() {
 
 
-    private suspend fun fetchGeneralSalesData(startDate: Long, endDate: Long): SalesData = withContext(Dispatchers.IO) {
-        val totalIncome = jobOrderDao.getTotalIncome(startDate, endDate)
-        val totalLoads = jobOrderDao.getTotalLoads(startDate, endDate)
-        val totalDetergentAddons = jobOrderDao.getTotalDetergentAddons(startDate, endDate)
-        val totalFabricConditionerAddons = jobOrderDao.getTotalFabricConditionerAddons(startDate, endDate)
-        val totalBleachAddons = jobOrderDao.getTotalBleachAddons(startDate, endDate)
-
-        return@withContext SalesData(
-            totalIncome = totalIncome,
-            totalLoads = totalLoads,
-            totalDetergentAddons = totalDetergentAddons,
-            totalFabricConditionerAddons = totalFabricConditionerAddons,
-            totalBleachAddons = totalBleachAddons
-        )
-    }
-
-
-    fun fetchSalesData(startDate: Long, endDate: Long, callback: (SalesData) -> Unit) {
+    fun fetchSalesDataForLaundryTypes(startDate: Long, endDate: Long, callback: (LaundrySalesResult) -> Unit) {
         viewModelScope.launch {
             try {
-                val salesData = fetchGeneralSalesData(startDate, endDate)
-                callback(salesData)
-            } catch (e: Exception) {
+                val regularSalesData = fetchSalesDataByLaundryType("Regular", startDate, endDate)
+                val bedsheetsSalesData = fetchSalesDataByLaundryType("Bedsheets", startDate, endDate)
 
+                val result = LaundrySalesResult(
+                    regularSales = regularSalesData,
+                    bedsheetsSales = bedsheetsSalesData
+                )
+                callback(result)
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 
 
-    fun fetchSalesDataByLaundryType(startDate: Long, endDate: Long, callback: (List<LaundrySalesData>) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val laundrySalesData = fetchLaundryTypeSalesData(startDate, endDate)
-                callback(laundrySalesData)
-            } catch (e: Exception) {
+    private suspend fun fetchSalesDataByLaundryType(laundryType: String, startDate: Long, endDate: Long): LaundrySalesData =
+        withContext(Dispatchers.IO) {
+            val totalIncome = jobOrderDao.getTotalIncomeByLaundryType(startDate, endDate).find { it.laundryType == laundryType }?.totalIncome ?: 0.0
+            val totalLoads = jobOrderDao.getTotalLoadsByLaundryType(startDate, endDate).find { it.laundryType == laundryType }?.totalLoads ?: 0
+            val addons = jobOrderDao.getAddonsByLaundryType(startDate, endDate).find { it.laundryType == laundryType }
 
-                e.printStackTrace()
-            }
-        }
-    }
-
-
-    private suspend fun fetchLaundryTypeSalesData(startDate: Long, endDate: Long): List<LaundrySalesData> = withContext(Dispatchers.IO) {
-        val totalIncomeByType = jobOrderDao.getTotalIncomeByLaundryType(startDate, endDate)
-        val totalLoadsByType = jobOrderDao.getTotalLoadsByLaundryType(startDate, endDate)
-        val addonsByType = jobOrderDao.getAddonsByLaundryType(startDate, endDate)
-
-
-        val loadsMap = totalLoadsByType.associateBy { it.laundryType }
-        val addonsMap = addonsByType.associateBy { it.laundryType }
-
-        return@withContext totalIncomeByType.map { income ->
-            LaundrySalesData(
-                laundryType = income.laundryType,
-                totalIncome = income.totalIncome,
-                totalLoads = loadsMap[income.laundryType]?.totalLoads ?: 0,
-                totalDetergentAddons = addonsMap[income.laundryType]?.totalDetergent ?: 0,
-                totalFabricConditionerAddons = addonsMap[income.laundryType]?.totalFabricConditioner ?: 0,
-                totalBleachAddons = addonsMap[income.laundryType]?.totalBleach ?: 0
+            return@withContext LaundrySalesData(
+                laundryType = laundryType,
+                totalIncome = totalIncome,
+                totalLoads = totalLoads,
+                totalDetergentAddons = addons?.totalDetergent ?: 0,
+                totalFabricConditionerAddons = addons?.totalFabricConditioner ?: 0,
+                totalBleachAddons = addons?.totalBleach ?: 0
             )
         }
-    }
 }
+
+
+
+
+

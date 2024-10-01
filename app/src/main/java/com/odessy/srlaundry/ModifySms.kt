@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 
-class modify_sms : AppCompatActivity() {
+class ModifySms : AppCompatActivity() {
     private lateinit var smsMessageViewModel: SmsMessageViewModel
     private lateinit var smsMessageEditText: EditText
     private lateinit var confirmButton: Button

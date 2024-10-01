@@ -13,6 +13,11 @@
     <string name="selected_laundry_type_format">Selected Laundry Type: %1$s</string>
     <string name="fabric_conditioner_addons">%1$s Fabric Conditioner Add-ons</string>
     <string name="bleach_addons">%1$s Bleach Add-ons</string>
+    <string name="total_sales">Total Sales: %1$s</string>
+    <string name="total_loads">Total Loads: %1$d</string>
+    <string name="addon_detergent">Detergent Addons: %1$d</string>
+    <string name="addon_bleach">Bleach Addons: %1$d</string>
+    <string name="addon_fabric_conditioner">Fabric Conditioner Addons: %1$d</string>
     <string-array name="roles_array">
         <item>Admin</item>
         <item>User</item>

@@ -13,34 +13,34 @@
         android:theme="@style/Theme.SRLaundry"
         tools:targetApi="31">
         <activity
-            android:name=".activity_admin_sales"
+            android:name=".ActivityAdminSales"
             android:exported="false" />
         <activity
-            android:name=".store_items"
+            android:name=".StoreItems"
             android:exported="false" />
         <activity
-            android:name=".modify_sms"
+            android:name=".ModifySms"
             android:exported="false" />
         <activity
-            android:name=".user_cart_item"
+            android:name=".UserCartItem"
             android:exported="false" />
         <activity
-            android:name=".admin_edit_laundry_price"
+            android:name=".AdminEditLaundryPrice"
             android:exported="false" />
         <activity
-            android:name=".admin_register"
+            android:name=".AdminRegister"
             android:exported="false" />
         <activity
-            android:name=".new_customer"
+            android:name=".NewCustomer"
             android:exported="false" />
         <activity
-            android:name=".new_job_order"
+            android:name=".NewJobOrder"
             android:exported="false" />
         <activity
             android:name=".laundry_service"
             android:exported="false" />
         <activity
-            android:name=".admin_dashboard"
+            android:name=".AdminDashboard"
             android:exported="false" />
         <activity
             android:name=".ManageStoreItemsActivity"
@@ -67,13 +67,13 @@
             android:name=".admin_registration"
             android:exported="false" />
         <activity
-            android:name=".user_store"
+            android:name=".UserStore"
             android:exported="false" />
         <activity
-            android:name=".user_laundry"
+            android:name=".UserLaundry"
             android:exported="false" />
         <activity
-            android:name=".user_dashboard"
+            android:name=".UserDashboard"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

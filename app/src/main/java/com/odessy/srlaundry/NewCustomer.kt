@@ -12,7 +12,7 @@ import com.odessy.srlaundry.entities.Customer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class new_customer : AppCompatActivity() {
+class NewCustomer : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var customerNameInput: EditText
@@ -45,10 +45,10 @@ class new_customer : AppCompatActivity() {
                     val newCustomer = Customer(name = name, phone = phone, promo = 0) // promo starts at 0
                     db.customerDao().insertCustomer(newCustomer)
                     runOnUiThread {
-                        Toast.makeText(this@new_customer, "Customer added successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@NewCustomer, "Customer added successfully!", Toast.LENGTH_SHORT).show()
 
                         // Redirect back to new_job_order after saving
-                        val intent = Intent(this@new_customer, new_job_order::class.java)
+                        val intent = Intent(this@NewCustomer, NewJobOrder::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Ensures the previous activity isn't recreated
                         startActivity(intent)
                         finish() // Close the current activity
@@ -66,7 +66,7 @@ class new_customer : AppCompatActivity() {
 
         // Cancel button functionality
         cancelButton.setOnClickListener {
-            startActivity(Intent(this@new_customer, new_job_order::class.java))
+            startActivity(Intent(this@NewCustomer, NewJobOrder::class.java))
         }
     }
 

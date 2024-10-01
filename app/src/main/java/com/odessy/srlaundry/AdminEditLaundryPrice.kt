@@ -13,7 +13,7 @@ import com.odessy.srlaundry.entities.LaundryPrice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class admin_edit_laundry_price : AppCompatActivity() {
+class AdminEditLaundryPrice : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var regularPriceInput: EditText
@@ -82,7 +82,7 @@ class admin_edit_laundry_price : AppCompatActivity() {
                     )
                     db.laundryPriceDao().updatePrices(updatedPrice)
                     runOnUiThread {
-                        Toast.makeText(this@admin_edit_laundry_price, "Prices updated successfully!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AdminEditLaundryPrice, "Prices updated successfully!", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
@@ -92,7 +92,7 @@ class admin_edit_laundry_price : AppCompatActivity() {
 
         // Cancel button functionality
         findViewById<Button>(R.id.buttonCancel).setOnClickListener {
-            startActivity(Intent(this@admin_edit_laundry_price, admin_dashboard::class.java))
+            startActivity(Intent(this@AdminEditLaundryPrice, AdminDashboard::class.java))
         }
     }
 

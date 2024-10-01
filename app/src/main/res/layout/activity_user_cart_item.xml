@@ -9,7 +9,7 @@
     android:orientation="horizontal"
     android:padding="8dp"
     android:background="#f5f5f5"
-    tools:context=".user_cart_item">
+    tools:context=".UserCartItem">
 
     <!-- Item Name -->
     <androidx.recyclerview.widget.RecyclerView
