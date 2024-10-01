@@ -44,5 +44,6 @@ interface JobOrderDao {
 
     @Query("SELECT laundryType AS laundryType, SUM(addOnDetergent) AS totalDetergent, SUM(addOnFabricConditioner) AS totalFabricConditioner, SUM(addOnBleach) AS totalBleach FROM JobOrder WHERE createdDate BETWEEN :startDate AND :endDate AND isActive = 0 GROUP BY laundryType")
     suspend fun getAddonsByLaundryType(startDate: Long, endDate: Long): List<LaundryAddons>
+
 }
 
