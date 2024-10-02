@@ -24,4 +24,10 @@ interface StoreItemDao {
 
     @Query("SELECT * FROM store_items WHERE productName LIKE :query")
     fun searchStoreItems(query: String): LiveData<List<StoreItem>>
+
+    @Query("SELECT * FROM store_items")
+    suspend fun getAllItems(): List<StoreItem>
+
+    @Query("UPDATE store_items SET quantity = :newQuantity WHERE id = :itemId")
+    suspend fun updateQuantity(itemId: Int, newQuantity: Int)
 }

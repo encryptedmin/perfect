@@ -29,7 +29,7 @@ class StoreItemAdapter(
         val item = storeItems[position]
         holder.productName.text = item.productName
         holder.quantity.text = "Quantity: ${item.quantity}"
-        holder.price.text = "Price: $${item.price}"
+        holder.price.text = " Price: ₱${item.price}"
         holder.deleteButton.setOnClickListener {
             deleteListener(item)
         }
