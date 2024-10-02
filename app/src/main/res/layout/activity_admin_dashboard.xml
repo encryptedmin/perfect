@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Manage Store Items Button -->
+
     <Button
         android:id="@+id/buttonManageStoreItems"
         android:layout_width="0dp"
@@ -35,7 +35,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="100dp" />
 
-    <!-- Update Laundry Price Button -->
+
     <Button
         android:id="@+id/buttonUpdateLaundryPrice"
         android:layout_width="0dp"
@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Check Laundry Sales Button -->
+
     <Button
         android:id="@+id/buttonCheckLaundrySales"
         android:layout_width="0dp"
@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Check Store Sales Button -->
+
     <Button
         android:id="@+id/buttonCheckStoreSales"
         android:layout_width="0dp"
@@ -71,7 +71,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Modify Promo Mechanics Button -->
+
     <Button
         android:id="@+id/buttonModifyPromoMechanics"
         android:layout_width="0dp"
@@ -83,7 +83,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Register New Account Button -->
+
     <Button
         android:id="@+id/buttonRegisterAccount"
         android:layout_width="0dp"
@@ -95,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <!-- Modify SMS Message Button -->
+
     <Button
         android:id="@+id/buttonModifySmsMessage"
         android:layout_width="0dp"

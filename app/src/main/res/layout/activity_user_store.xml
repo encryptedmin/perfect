@@ -19,7 +19,7 @@
         android:inputType="text"
         android:drawableStart="@android:drawable/ic_menu_search" />
 
-    <!-- Items RecyclerView -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemsRecyclerView"
         android:layout_width="match_parent"
@@ -29,7 +29,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:background="@drawable/rounded_corner" />
 
-    <!-- Button Container for Back and Next -->
+
     <LinearLayout
         android:id="@+id/buttonContainer"
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="16dp">
 
-        <!-- Back Button -->
+
         <Button
             android:id="@+id/backButton"
             android:layout_width="0dp"
@@ -52,7 +52,7 @@
             android:padding="16dp"
             android:layout_marginEnd="8dp" />
 
-        <!-- Next Button -->
+
         <Button
             android:id="@+id/nextButton"
             android:layout_width="0dp"

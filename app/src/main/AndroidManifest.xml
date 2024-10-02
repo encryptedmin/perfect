@@ -5,6 +5,7 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="true" />
+
     <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
@@ -17,7 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SRLaundry"
         tools:targetApi="31">
-
+        <activity
+            android:name=".AdminPromoMechanics"
+            android:exported="false" />
         <activity
             android:name=".ActivityAdminSales"
             android:exported="false" />
@@ -59,6 +62,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

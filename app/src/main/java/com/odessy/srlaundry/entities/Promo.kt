@@ -2,7 +2,9 @@ package com.odessy.srlaundry.entities
 import androidx.room.PrimaryKey
 import androidx.room.Entity
 
-@Entity (tableName = "Promo")
-data class Promo (@PrimaryKey(autoGenerate = true)val id: Int = 0,
-    val serviceFrequency: Int
-    )
+@Entity
+data class Promo(
+    @PrimaryKey val id: Int = 1,
+    var serviceFrequency: Int,
+    var isPromoActive: Boolean
+)
