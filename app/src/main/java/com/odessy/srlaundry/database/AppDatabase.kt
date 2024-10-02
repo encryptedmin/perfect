@@ -21,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun accountsDao(): AccountsDao
     abstract fun customerDao(): CustomerDao // Added CustomerDao
     abstract fun jobOrderDao(): JobOrderDao
-    abstract fun promoDao(): PromotionDao
+    abstract fun promotionDao(): PromotionDao
     abstract fun laundryPriceDao(): LaundryPriceDao
     abstract fun laundrySalesDao(): LaundrySalesDao
     abstract fun smsMessageDao(): SmsMessageDao
@@ -48,7 +48,7 @@ abstract class AppDatabase : RoomDatabase() {
         // Callback for populating the database with initial data
         private class AppDatabaseCallback(
             private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
+        ) : Callback() {
 
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)

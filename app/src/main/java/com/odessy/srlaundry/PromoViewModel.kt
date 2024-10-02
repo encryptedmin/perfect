@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class PromoViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val promoDao = AppDatabase.getDatabase(application, viewModelScope).promoDao()
+    private val promoDao = AppDatabase.getDatabase(application, viewModelScope).promotionDao()
 
     // Remove the property and use a function instead
     fun getPromo(): LiveData<Promotion?> {

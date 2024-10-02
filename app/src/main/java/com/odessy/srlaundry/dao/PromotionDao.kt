@@ -26,4 +26,7 @@ interface PromotionDao {
 
     @Query("UPDATE Promotion SET isPromoActive = :isPromoActive WHERE id = :promoId")
     suspend fun setPromoActive(promoId: Int, isPromoActive: Boolean)
+
+    @Query("SELECT * FROM Promotion WHERE isPromoActive = 1 LIMIT 1")
+    suspend fun getActivePromotion(): Promotion?
 }

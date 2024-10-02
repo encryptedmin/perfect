@@ -9,12 +9,11 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.odessy.srlaundry.database.AppDatabase
-import com.odessy.srlaundry.entities.Customer
-import com.odessy.srlaundry.entities.JobOrder
-import com.odessy.srlaundry.entities.LaundryPrice
+import com.odessy.srlaundry.entities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
 
 class NewJobOrder : AppCompatActivity() {
 
@@ -219,33 +218,57 @@ class NewJobOrder : AppCompatActivity() {
         val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
         val loads = Math.ceil(weight / loadSize).toInt()
 
+        // Fetch the current promotion details
+        val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
+        val promotion = withContext(Dispatchers.IO) { db.promotionDao().getActivePromotion() }
+
+        var isPromoApplied = false
+        var finalTotalPrice = totalPrice
+
+        // Check if the promo is active and customer qualifies
+        if (promotion != null && promotion.isPromoActive && selectedCustomer != null) {
+            if (selectedCustomer!!.promo >= promotion.serviceFrequency) {
+                // Apply promo by deducting the price of one load (based on selected laundry type)
+                val pricePerLoad = if (selectedLaundryType == "Regular") laundryPrice.regular else laundryPrice.bedSheet
+                finalTotalPrice -= pricePerLoad // Deduct price for 1 free load
+                isPromoApplied = true
+                selectedCustomer!!.promo = 0 // Reset promo count after applying
+            } else {
+                selectedCustomer!!.promo += 1 // Increment promo count if promo not applied
+            }
+        }
+
+        // Create the JobOrder with updated final price
         val jobOrder = JobOrder(
             customerName = selectedCustomer?.name ?: "",
+            customerPhone = selectedCustomer?.phone ?: "",
             weight = weight,
             loads = loads,
             addOnDetergent = addOnDetergentCount,
             addOnFabricConditioner = addOnFabricConditionerCount,
             addOnBleach = addOnBleachCount,
-            totalPrice = totalPrice,
+            totalPrice = finalTotalPrice, // Use the updated total price after promo application
             laundryType = selectedLaundryType,
-            customerPhone = selectedCustomer?.phone ?: ""
+            isActive = true
         )
 
-
+        // Insert job order and update customer promo count
         withContext(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
-            // Insert the job order
             db.jobOrderDao().insertJobOrder(jobOrder)
 
-            // Increment the customer's promo count
-            selectedCustomer?.id?.let { customerId ->
-                db.customerDao().incrementCustomerPromo(customerId)
+            // Update customer's promo count
+            selectedCustomer?.let {
+                db.customerDao().updateCustomerPromo(it.id, it.promo)
             }
         }
 
-        // Update UI or show a Toast message on the Main thread after job order is created
+        // Show a message indicating whether a promo was applied
         withContext(Dispatchers.Main) {
-            Toast.makeText(this@NewJobOrder, getString(R.string.job_order_created), Toast.LENGTH_SHORT).show()
+            if (isPromoApplied) {
+                Toast.makeText(this@NewJobOrder, "Promo applied! 1 load free.", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this@NewJobOrder, "Job order created.", Toast.LENGTH_SHORT).show()
+            }
             clearFields()
         }
     }
