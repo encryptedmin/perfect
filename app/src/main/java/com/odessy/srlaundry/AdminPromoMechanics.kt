@@ -7,8 +7,7 @@ import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.odessy.srlaundry.database.AppDatabase
-import com.odessy.srlaundry.entities.Promo
+import com.odessy.srlaundry.entities.Promotion
 import com.odessy.srlaundry.viewmodels.PromoViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,14 +59,14 @@ class AdminPromoMechanics : AppCompatActivity() {
 
         val serviceFrequency = serviceFrequencyText.toInt()
 
-        // Create a Promo object with the data
-        val promo = Promo(serviceFrequency = serviceFrequency, isPromoActive = isPromoActive)
+        // Create a Promotion object with the data
+        val promotion = Promotion(serviceFrequency = serviceFrequency, isPromoActive = isPromoActive)
 
         // Save the promo to the database
         CoroutineScope(Dispatchers.IO).launch {
-            promoViewModel.insertOrUpdatePromo(promo)
+            promoViewModel.insertOrUpdatePromo(promotion)
             runOnUiThread {
-                Toast.makeText(this@AdminPromoMechanics, "Promo settings saved", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AdminPromoMechanics, "Promotion settings saved", Toast.LENGTH_SHORT).show()
             }
         }
     }

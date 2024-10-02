@@ -231,10 +231,16 @@ class NewJobOrder : AppCompatActivity() {
             customerPhone = selectedCustomer?.phone ?: ""
         )
 
-        // Perform database operation in IO dispatcher
+
         withContext(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
+            // Insert the job order
             db.jobOrderDao().insertJobOrder(jobOrder)
+
+            // Increment the customer's promo count
+            selectedCustomer?.id?.let { customerId ->
+                db.customerDao().incrementCustomerPromo(customerId)
+            }
         }
 
         // Update UI or show a Toast message on the Main thread after job order is created
@@ -243,6 +249,7 @@ class NewJobOrder : AppCompatActivity() {
             clearFields()
         }
     }
+
 
     private fun setupAddOnButtons() {
         findViewById<Button>(R.id.buttonPlusBleach).setOnClickListener {

@@ -3,7 +3,7 @@ import androidx.room.PrimaryKey
 import androidx.room.Entity
 
 @Entity
-data class Promo(
+data class Promotion(
     @PrimaryKey val id: Int = 1,
     var serviceFrequency: Int,
     var isPromoActive: Boolean

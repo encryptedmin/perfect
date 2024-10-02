@@ -1,6 +1,5 @@
 package com.odessy.srlaundry.database
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
@@ -15,14 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [Accounts::class, Customer::class, JobOrder::class,
-    StoreItem::class, LaundryPrice::class, LaundrySales::class, SmsMessage::class, Promo::class], version = 1, exportSchema = false)
+    StoreItem::class, LaundryPrice::class, LaundrySales::class, SmsMessage::class, Promotion::class], version = 1, exportSchema = false)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun accountsDao(): AccountsDao
     abstract fun customerDao(): CustomerDao // Added CustomerDao
     abstract fun jobOrderDao(): JobOrderDao
-    abstract fun promoDao(): PromoDao
+    abstract fun promoDao(): PromotionDao
     abstract fun laundryPriceDao(): LaundryPriceDao
     abstract fun laundrySalesDao(): LaundrySalesDao
     abstract fun smsMessageDao(): SmsMessageDao
