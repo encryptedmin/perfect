@@ -1,15 +1,20 @@
 package com.odessy.srlaundry
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.telephony.SmsManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.JobOrder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import android.content.Intent
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -22,6 +27,7 @@ class UserLaundry : AppCompatActivity() {
     private var selectedJobOrder: JobOrder? = null
 
     private lateinit var db: AppDatabase
+    private val SMS_PERMISSION_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +50,6 @@ class UserLaundry : AppCompatActivity() {
 
         // Set up button to start a new job order
         newJobOrderButton.setOnClickListener {
-            // Redirect to new job order activity
             startActivity(Intent(this@UserLaundry, NewJobOrder::class.java))
         }
 
@@ -56,13 +61,21 @@ class UserLaundry : AppCompatActivity() {
                     jobOrder.isActive = false
                     db.jobOrderDao().updateJobOrder(jobOrder)
 
-                    withContext(Dispatchers.Main) {
-                        // Show a toast message
-                        Toast.makeText(this@UserLaundry, "Laundry Finished!", Toast.LENGTH_SHORT).show()
+                    // Fetch the SMS message from the database
+                    val smsMessage = db.smsMessageDao().getSmsMessage() // Fetch the message from SmsMessage entity
+                    val message = smsMessage?.message ?: "Your laundry job has been completed!" // Default message if not found
 
-                        // Refresh the list of active job orders
-                        finishButton.isEnabled = false // Disable the button again
-                        loadActiveJobOrders() // Refresh the list to remove finished jobs
+                    // Check and request SMS permission
+                    if (ContextCompat.checkSelfPermission(this@UserLaundry, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                        sendSmsNotification(jobOrder.customerPhone, message)
+                    } else {
+                        requestSmsPermission()
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@UserLaundry, "Laundry Finished!", Toast.LENGTH_SHORT).show()
+                        finishButton.isEnabled = false
+                        loadActiveJobOrders()
                     }
                 }
             }
@@ -70,41 +83,32 @@ class UserLaundry : AppCompatActivity() {
 
         // Set up "Back" button functionality
         backButton.setOnClickListener {
-            val intent = Intent(this@UserLaundry, UserDashboard::class.java)
-            startActivity(intent)
+            startActivity(Intent(this@UserLaundry, UserDashboard::class.java))
         }
     }
 
     // Load active job orders from the database
     private fun loadActiveJobOrders() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val activeJobs = db.jobOrderDao().getActiveJobOrders() // Fetch only active job orders
+            val activeJobs = db.jobOrderDao().getActiveJobOrders()
 
             withContext(Dispatchers.Main) {
                 if (activeJobs.isNotEmpty()) {
-                    // Create a SimpleDateFormat to format the creation date
                     val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
-
-                    // Create a list to hold formatted strings for each job order
                     val jobOrderDetails = activeJobs.map { jobOrder ->
-                        val laundryType = jobOrder.laundryType // Get laundry type directly from the job order
+                        val laundryType = jobOrder.laundryType
                         val formattedDate = dateFormat.format(Date(jobOrder.createdDate))
-
-                        // Build the display string with customer name, laundry type, loads, total price, and date
                         "${jobOrder.customerName} | $laundryType | Loads: ${jobOrder.loads} | Price: ₱${jobOrder.totalPrice} | Date: $formattedDate"
                     }
 
-                    // Set up the ListView adapter with the formatted job order details
                     val adapter = ArrayAdapter(this@UserLaundry, android.R.layout.simple_list_item_1, jobOrderDetails)
                     listView.adapter = adapter
 
-                    // Set item click listener to select a job order
                     listView.setOnItemClickListener { _, _, position, _ ->
                         selectedJobOrder = activeJobs[position]
-                        finishButton.isEnabled = true // Enable the "Finish Laundry" button when a job is selected
+                        finishButton.isEnabled = true
                     }
                 } else {
-                    // If no active jobs, show a message and clear the ListView
                     Toast.makeText(this@UserLaundry, "No active laundry jobs", Toast.LENGTH_SHORT).show()
                     listView.adapter = null
                 }
@@ -112,4 +116,41 @@ class UserLaundry : AppCompatActivity() {
         }
     }
 
+    // Send SMS notification
+    private fun sendSmsNotification(phoneNumber: String?, message: String) {
+        if (!phoneNumber.isNullOrEmpty()) {
+            try {
+                val smsManager = SmsManager.getDefault()
+                smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Failed to send SMS: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Invalid phone number", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Request SMS permission
+    private fun requestSmsPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
+    }
+
+    // Handle the result of the permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == SMS_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can now send the SMS
+                selectedJobOrder?.let { jobOrder ->
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val smsMessage = db.smsMessageDao().getSmsMessage()
+                        val message = smsMessage?.message ?: "Your laundry job has been completed!"
+                        sendSmsNotification(jobOrder.customerPhone, message)
+                    }
+                }
+            } else {
+                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }

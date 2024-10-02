@@ -206,7 +206,7 @@ class NewJobOrder : AppCompatActivity() {
         buttonConfirm.isEnabled = false
         selectedCustomer = null
         textTotalPrice.text = getString(R.string.total_price_format, 0.0)
-        textTotalLoads.text = getString(R.string.total_loads_format, 0) // Reset loads to 0
+        textTotalLoads.text = getString(R.string.total_loads_format, 0)
         addOnBleachCount = 0
         addOnDetergentCount = 0
         addOnFabricConditionerCount = 0

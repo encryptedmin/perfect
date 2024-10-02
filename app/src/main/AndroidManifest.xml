@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="true" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SRLaundry"
         tools:targetApi="31">
+
         <activity
             android:name=".ActivityAdminSales"
             android:exported="false" />
@@ -37,34 +43,7 @@
             android:name=".NewJobOrder"
             android:exported="false" />
         <activity
-            android:name=".laundry_service"
-            android:exported="false" />
-        <activity
             android:name=".AdminDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".ManageStoreItemsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UpdateLaundryPriceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CheckLaundrySalesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CheckStoreSalesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ModifyPromoMechanicsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterAccountActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ModifySmsMessageActivity"
-            android:exported="false" />
-        <activity
-            android:name=".admin_registration"
             android:exported="false" />
         <activity
             android:name=".UserStore"
@@ -80,7 +59,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
