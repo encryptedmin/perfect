@@ -6,20 +6,27 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.odessy.srlaundry.converters.DateTypeConverter
 import com.odessy.srlaundry.dao.*
 import com.odessy.srlaundry.entities.*
-import com.odessy.srlaundry.converters.DateTypeConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Accounts::class, Customer::class, JobOrder::class,
-    StoreItem::class, LaundryPrice::class, LaundrySales::class, SmsMessage::class, Promotion::class, Transaction::class], version = 1, exportSchema = false)
+@Database(
+    entities = [
+        Accounts::class, Customer::class, JobOrder::class, StoreItem::class,
+        LaundryPrice::class, LaundrySales::class, SmsMessage::class,
+        Promotion::class, Transaction::class
+    ],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun accountsDao(): AccountsDao
-    abstract fun customerDao(): CustomerDao // Added CustomerDao
+    abstract fun customerDao(): CustomerDao
     abstract fun jobOrderDao(): JobOrderDao
     abstract fun promotionDao(): PromotionDao
     abstract fun laundryPriceDao(): LaundryPriceDao
@@ -31,6 +38,7 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
+
 
         fun getDatabase(context: Context, scope: CoroutineScope): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -46,10 +54,9 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Callback for populating the database with initial data
         private class AppDatabaseCallback(
             private val scope: CoroutineScope
-        ) : Callback() {
+        ) : RoomDatabase.Callback() {
 
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
@@ -61,26 +68,34 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+
+        // Function to populate the database with initial data
         suspend fun populateDatabase(accountsDao: AccountsDao, laundryPriceDao: LaundryPriceDao) {
+            try {
+                // Insert admin account
+                val adminAccount = Accounts(
+                    username = "admin",
+                    password = "admin",
+                    role = "admin"
+                )
+                accountsDao.insert(adminAccount)
 
-            val adminAccount = Accounts(
-                username = "admin",
-                password = "admin",
-                role = "admin"
-            )
-            accountsDao.insert(adminAccount)
+                // Insert initial laundry prices
+                val initialPrices = LaundryPrice(
+                    regular = 180.0,
+                    bedSheet = 200.0,
+                    addOnDetergent = 12.0,
+                    addOnFabricConditioner = 12.0,
+                    addOnBleach = 12.0
+                )
+                laundryPriceDao.insertLaundryPrice(initialPrices)
 
-            // Insert initial laundry prices
-            val initialPrices = LaundryPrice(
-                regular = 180.0,
-                bedSheet = 200.0,
-                addOnDetergent = 12.0,
-                addOnFabricConditioner = 12.0,
-                addOnBleach = 12.0
-            )
-            laundryPriceDao.insertLaundryPrice(initialPrices)
+            } catch (e: Exception) {
+                // Log error or handle it gracefully
+                e.printStackTrace()
+            }
         }
+
 
     }
 }
-

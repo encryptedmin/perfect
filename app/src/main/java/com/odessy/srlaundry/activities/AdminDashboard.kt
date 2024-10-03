@@ -52,5 +52,10 @@ val buttonModifyPromoMechanics: Button = findViewById(R.id.buttonModifyPromoMech
             val intent = Intent(this@AdminDashboard, AdminPromoMechanics::class.java)
             startActivity(intent)
         }
+val buttonCheckStoreSales: Button = findViewById(R.id.buttonCheckStoreSales)
+        buttonCheckStoreSales.setOnClickListener {
+            val intent = Intent(this@AdminDashboard, StoreSalesActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
