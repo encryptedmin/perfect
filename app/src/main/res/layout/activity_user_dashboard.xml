@@ -8,7 +8,7 @@
     android:background="@drawable/login_background"
     android:gravity="center"
     android:padding="16dp"
-    tools:context=".UserDashboard">
+    tools:context=".activities.UserDashboard">
 
     <ImageButton
         android:id="@+id/buttonLaundryService"
@@ -20,8 +20,7 @@
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         android:contentDescription="Laundry Service"
-        android:src="@drawable/ic_laundry"
-        />
+        android:src="@drawable/ic_laundry" />
 
     <TextView
         android:id="@+id/labelLaundryService"
@@ -45,8 +44,7 @@
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         android:contentDescription="Mini Store"
-        android:src="@drawable/ic_store"
-        />
+        android:src="@drawable/ic_store" />
 
     <TextView
         android:id="@+id/labelMiniStore"
@@ -69,9 +67,6 @@
         android:layout_marginBottom="32dp"
         android:text="Logout"
         android:textColor="@android:color/white"
-        android:backgroundTint="#2196F3"
-        />
-
-
+        android:backgroundTint="#2196F3" />
 
 </RelativeLayout>

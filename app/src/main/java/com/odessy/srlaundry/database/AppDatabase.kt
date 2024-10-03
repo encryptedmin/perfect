@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [Accounts::class, Customer::class, JobOrder::class,
-    StoreItem::class, LaundryPrice::class, LaundrySales::class, SmsMessage::class, Promotion::class], version = 1, exportSchema = false)
+    StoreItem::class, LaundryPrice::class, LaundrySales::class, SmsMessage::class, Promotion::class, Transaction::class], version = 1, exportSchema = false)
 @TypeConverters(DateTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
@@ -26,6 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun laundrySalesDao(): LaundrySalesDao
     abstract fun smsMessageDao(): SmsMessageDao
     abstract fun storeItemDao(): StoreItemDao
+    abstract fun transactionDao(): TransactionDao
 
     companion object {
         @Volatile
@@ -60,9 +61,8 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Populate the database with an admin account and initial laundry prices
         suspend fun populateDatabase(accountsDao: AccountsDao, laundryPriceDao: LaundryPriceDao) {
-            // Insert admin account
+
             val adminAccount = Accounts(
                 username = "admin",
                 password = "admin",

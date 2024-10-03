@@ -1,6 +1,9 @@
 package com.odessy.srlaundry.dao
 import androidx.room.*
 import com.odessy.srlaundry.entities.JobOrder
+import com.odessy.srlaundry.others.LaundryAddons
+import com.odessy.srlaundry.others.LaundryIncome
+import com.odessy.srlaundry.others.LaundryLoad
 
 @Dao
 interface LaundrySalesDao

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@color/white"
-    tools:context=".ModifySms">
+    tools:context=".activities.ModifySms">
 
     <TextView
         android:id="@+id/titleTextView"
@@ -20,7 +19,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="24dp" />
 
-    <!-- Instruction Text -->
     <TextView
         android:id="@+id/instructionTextView"
         android:layout_width="wrap_content"
@@ -31,7 +29,6 @@
         android:layout_below="@id/titleTextView"
         android:layout_marginBottom="16dp" />
 
-    <!-- EditText for SMS message -->
     <EditText
         android:id="@+id/smsMessageEditText"
         android:layout_width="match_parent"
@@ -46,7 +43,6 @@
         android:gravity="top|start"
         android:textColor="@color/black" />
 
-    <!-- Confirm Button -->
     <Button
         android:id="@+id/confirmButton"
         android:layout_width="match_parent"
@@ -58,7 +54,6 @@
         android:layout_marginTop="24dp"
         android:padding="16dp" />
 
-    <!-- Cancel Button -->
     <Button
         android:id="@+id/cancelButton"
         android:layout_width="match_parent"

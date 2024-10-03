@@ -8,7 +8,7 @@
     android:padding="16dp"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".AdminRegister">
+    tools:context=".activities.AdminRegister">
 
     <TextView
         android:layout_width="wrap_content"

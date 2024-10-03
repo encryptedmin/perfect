@@ -19,49 +19,45 @@
         android:theme="@style/Theme.SRLaundry"
         tools:targetApi="31">
         <activity
-            android:name=".StoreActivity"
+            android:name=".activities.StoreActivity"
             android:exported="false" />
         <activity
-            android:name=".AdminPromoMechanics"
+            android:name=".activities.AdminPromoMechanics"
             android:exported="false" />
         <activity
-            android:name=".ActivityAdminSales"
+            android:name=".activities.ActivityAdminSales"
             android:exported="false" />
         <activity
-            android:name=".StoreItems"
+            android:name=".activities.StoreItems"
             android:exported="false" />
         <activity
-            android:name=".ModifySms"
+            android:name=".activities.ModifySms"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.AdminEditLaundryPrice"
             android:exported="false" />
         <activity
-            android:name=".UserCartItem"
+            android:name=".activities.AdminRegister"
             android:exported="false" />
         <activity
-            android:name=".AdminEditLaundryPrice"
+            android:name=".activities.NewCustomer"
             android:exported="false" />
         <activity
-            android:name=".AdminRegister"
+            android:name=".activities.NewJobOrder"
             android:exported="false" />
         <activity
-            android:name=".NewCustomer"
+            android:name=".activities.AdminDashboard"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.UserLaundry"
             android:exported="false" />
         <activity
-            android:name=".NewJobOrder"
+            android:name=".activities.UserDashboard"
             android:exported="false" />
         <activity
-            android:name=".AdminDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".UserStore"
-            android:exported="false" />
-        <activity
-            android:name=".UserLaundry"
-            android:exported="false" />
-        <activity
-            android:name=".UserDashboard"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
