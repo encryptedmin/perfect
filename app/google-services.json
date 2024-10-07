@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "469030032302",
+    "firebase_url": "https://srlaundry-219ec-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "srlaundry-219ec",
+    "storage_bucket": "srlaundry-219ec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469030032302:android:bcff7f9d694cac55b4ae3f",
+        "android_client_info": {
+          "package_name": "com.odessy.srlaundry"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb-hDicT3dvwIVgFQfWBusPndtq4LOsS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

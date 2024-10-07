@@ -27,7 +27,6 @@ class SalesViewModel(private val jobOrderDao: JobOrderDao) : ViewModel() {
         }
     }
 
-
     private suspend fun fetchSalesDataByLaundryType(laundryType: String, startDate: Long, endDate: Long): LaundrySalesData =
         withContext(Dispatchers.IO) {
             val totalIncome = jobOrderDao.getTotalIncomeByLaundryType(startDate, endDate).find { it.laundryType == laundryType }?.totalIncome ?: 0.0

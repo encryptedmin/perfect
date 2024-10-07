@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -49,22 +50,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-
-
-    // Room runtime library
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.firestore)
     implementation(libs.androidx.room.runtime)
-
-    // Room compiler with KSP
     ksp(libs.androidx.room.compiler)
-
-    // Room Kotlin Extensions for Coroutines support
     implementation(libs.androidx.room.ktx)
-
-    // RecyclerView
     implementation(libs.androidx.recyclerview)
-
-    // ViewModel and LiveData
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
 }
