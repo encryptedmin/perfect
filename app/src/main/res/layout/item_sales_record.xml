@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_sales_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Date" />
+
+    <TextView
+        android:id="@+id/tv_sales_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Type" />
+
+    <TextView
+        android:id="@+id/tv_sales_loads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loads" />
+
+    <TextView
+        android:id="@+id/tv_sales_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Price" />
+</LinearLayout>
