@@ -10,6 +10,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.odessy.srlaundry.R
 import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.Accounts
@@ -22,21 +23,22 @@ class AdminRegister : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var roleSpinner: Spinner
     private lateinit var registerButton: Button
-    private lateinit var buttonCancelRegister: Button // Declare the cancel button
-    private var selectedRole: String = "user" // Default role
+    private lateinit var buttonCancelRegister: Button
+    private var selectedRole: String = "user"
+
+    // Firestore instance
+    private val firestoreDb = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_register)
 
-        // Initialize views
         usernameInput = findViewById(R.id.editTextUsername)
         passwordInput = findViewById(R.id.editTextPassword)
         roleSpinner = findViewById(R.id.spinnerRole)
         registerButton = findViewById(R.id.buttonRegister)
-        buttonCancelRegister = findViewById(R.id.buttonCancelRegister) // Initialize the cancel button
+        buttonCancelRegister = findViewById(R.id.buttonCancelRegister)
 
-        // Setup spinner
         val roles = arrayOf("admin", "user")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roles)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -48,11 +50,10 @@ class AdminRegister : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedRole = "user" // Default value
+                selectedRole = "user"
             }
         }
 
-        // Handle Register button click
         registerButton.setOnClickListener {
             val username = usernameInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
@@ -65,24 +66,53 @@ class AdminRegister : AppCompatActivity() {
             }
         }
 
-        // Handle Cancel button click
         buttonCancelRegister.setOnClickListener {
-            // Redirect to admin_dashboard activity
             val intent = Intent(this@AdminRegister, AdminDashboard::class.java)
             startActivity(intent)
-            finish() // Optionally close the registration activity
+            finish()
         }
     }
 
+    // Register the account in both Room and Firestore
     private fun registerAccount(account: Accounts) {
         val db = AppDatabase.getDatabase(this, lifecycleScope)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            db.accountsDao().insert(account) // Assuming you have an insert method in your AccountsDao
+            // Insert into Room database
+            db.accountsDao().insert(account)
+
+            // Save to Firestore
+            saveAccountToFirestore(account)
+
+            // Run the success message on the main thread
             runOnUiThread {
                 Toast.makeText(this@AdminRegister, "Registration successful!", Toast.LENGTH_SHORT).show()
-                finish() // Close the registration activity
+                finish()
             }
         }
+    }
+
+    // Function to save the account to Firestore
+    private fun saveAccountToFirestore(account: Accounts) {
+        val accountData = hashMapOf(
+            "username" to account.username,
+            "password" to account.password, // In production, passwords should be encrypted!
+            "role" to account.role
+        )
+
+        firestoreDb.collection("users")
+            .add(accountData)
+            .addOnSuccessListener {
+                // Success logging
+                runOnUiThread {
+                    Toast.makeText(this@AdminRegister, "Account saved to Firestore!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                // Error logging
+                runOnUiThread {
+                    Toast.makeText(this@AdminRegister, "Error saving account to Firestore: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
     }
 }

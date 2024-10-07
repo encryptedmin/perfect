@@ -158,7 +158,7 @@ class StoreActivity : AppCompatActivity() {
 
                 // Insert the transaction record
                 val transaction = Transaction(
-                    productId = item.id,
+                    id = item.id,
                     productName = item.productName,
                     quantity = item.quantity,
                     totalPrice = item.price * item.quantity,

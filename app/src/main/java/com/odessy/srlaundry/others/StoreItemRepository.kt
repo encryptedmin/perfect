@@ -36,3 +36,4 @@ class StoreItemRepository(private val storeItemDao: StoreItemDao) {
         return storeItemDao.searchStoreItems(query)
     }
 }
+

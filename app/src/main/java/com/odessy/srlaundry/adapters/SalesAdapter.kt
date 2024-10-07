@@ -29,10 +29,10 @@ class SalesAdapter : ListAdapter<LaundrySales, SalesAdapter.SalesViewHolder>(Sal
         private val tvTotalPrice: TextView = itemView.findViewById(R.id.tv_sales_price)
 
         fun bind(sales: LaundrySales) {
-            tvDate.text = sales.transactionDate.toString() // Format date as needed
+            tvDate.text = sales.transactionDate.toString()
             tvType.text = sales.laundryType
             tvLoads.text = "Loads: ${sales.loads}"
-            tvTotalPrice.text = "Total: $${sales.totalPrice}"
+            tvTotalPrice.text = "Total: ₱${sales.totalPrice}"
         }
     }
 

@@ -38,7 +38,6 @@ class NewJobOrder : AppCompatActivity() {
     private var addOnDetergentCount = 0
     private var addOnFabricConditionerCount = 0
 
-    private val firestoreDb = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

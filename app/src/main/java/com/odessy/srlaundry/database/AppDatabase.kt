@@ -68,11 +68,8 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-
-        // Function to populate the database with initial data
         suspend fun populateDatabase(accountsDao: AccountsDao, laundryPriceDao: LaundryPriceDao) {
             try {
-                // Insert admin account
                 val adminAccount = Accounts(
                     username = "admin",
                     password = "admin",
@@ -80,7 +77,6 @@ abstract class AppDatabase : RoomDatabase() {
                 )
                 accountsDao.insert(adminAccount)
 
-                // Insert initial laundry prices
                 val initialPrices = LaundryPrice(
                     regular = 180.0,
                     bedSheet = 200.0,
@@ -91,7 +87,7 @@ abstract class AppDatabase : RoomDatabase() {
                 laundryPriceDao.insertLaundryPrice(initialPrices)
 
             } catch (e: Exception) {
-                // Log error or handle it gracefully
+
                 e.printStackTrace()
             }
         }
