@@ -8,13 +8,14 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.odessy.srlaundry.R
 import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
+import java.util.*
 
 class NewJobOrder : AppCompatActivity() {
 
@@ -24,7 +25,7 @@ class NewJobOrder : AppCompatActivity() {
     private lateinit var radioGroupLaundryType: RadioGroup
     private lateinit var inputLaundryWeight: EditText
     private lateinit var textTotalPrice: TextView
-    private lateinit var textTotalLoads: TextView // Field for showing total loads
+    private lateinit var textTotalLoads: TextView
     private lateinit var buttonConfirm: Button
     private lateinit var buttonClearFields: Button
     private lateinit var buttonCancel: Button
@@ -37,29 +38,18 @@ class NewJobOrder : AppCompatActivity() {
     private var addOnDetergentCount = 0
     private var addOnFabricConditionerCount = 0
 
+    private val firestoreDb = FirebaseFirestore.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_job_order)
 
-        // Initialize views
         initializeViews()
-
-        // Load laundry prices from the database
         loadLaundryPrices()
-
-        // Search customer functionality
         setupCustomerSearch()
-
-        // Radio group for laundry type selection
         setupLaundryTypeSelection()
-
-        // Laundry weight input
         setupWeightInput()
-
-        // Button functionalities
         setupButtonFunctions()
-
-        // Setup add-on buttons
         setupAddOnButtons()
     }
 
@@ -70,12 +60,12 @@ class NewJobOrder : AppCompatActivity() {
         radioGroupLaundryType = findViewById(R.id.radioGroupLaundryType)
         inputLaundryWeight = findViewById(R.id.inputLaundryWeight)
         textTotalPrice = findViewById(R.id.textTotalPrice)
-        textTotalLoads = findViewById(R.id.textTotalLoads) // Initialize textTotalLoads view
+        textTotalLoads = findViewById(R.id.textTotalLoads)
         buttonConfirm = findViewById(R.id.buttonConfirm)
         buttonClearFields = findViewById(R.id.buttonClearFields)
         buttonCancel = findViewById(R.id.buttonCancel)
 
-        buttonConfirm.isEnabled = false // Disable Confirm button initially
+        buttonConfirm.isEnabled = false
     }
 
     private fun setupCustomerSearch() {
@@ -90,7 +80,7 @@ class NewJobOrder : AppCompatActivity() {
 
         customerListView.setOnItemClickListener { _, _, position, _ ->
             selectedCustomer = customerListView.getItemAtPosition(position) as? Customer
-            buttonConfirm.isEnabled = selectedCustomer != null // Enable Confirm button once a customer is selected
+            buttonConfirm.isEnabled = selectedCustomer != null
         }
     }
 
@@ -118,7 +108,7 @@ class NewJobOrder : AppCompatActivity() {
 
     private fun setupButtonFunctions() {
         buttonCreateNewCustomer.setOnClickListener {
-            startActivity(Intent(this@NewJobOrder, NewCustomer::class.java)) // Start new customer activity
+            startActivity(Intent(this@NewJobOrder, NewCustomer::class.java))
         }
 
         buttonCancel.setOnClickListener {
@@ -130,10 +120,10 @@ class NewJobOrder : AppCompatActivity() {
         }
 
         buttonConfirm.setOnClickListener {
-            // Launch a coroutine to ensure the JobOrder is created before redirecting
+
             lifecycleScope.launch {
-                createJobOrder() // Wait until job order is created
-                startActivity(Intent(this@NewJobOrder, UserLaundry::class.java)) // Redirect after job order creation
+                createJobOrder()
+                startActivity(Intent(this@NewJobOrder, UserLaundry::class.java))
             }
         }
     }
@@ -186,16 +176,15 @@ class NewJobOrder : AppCompatActivity() {
         }
 
         val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
-        val loads = Math.ceil(weight / loadSize).toInt() // Calculate total loads
+        val loads = Math.ceil(weight / loadSize).toInt()
 
         totalPrice = (loads * pricePerLoad) +
                 (addOnBleachCount * laundryPrice.addOnBleach) +
                 (addOnDetergentCount * laundryPrice.addOnDetergent) +
                 (addOnFabricConditionerCount * laundryPrice.addOnFabricConditioner)
 
-        // Set total price and total loads
         textTotalPrice.text = getString(R.string.total_price_format, totalPrice)
-        textTotalLoads.text = getString(R.string.total_loads_format, loads) // Set number of loads
+        textTotalLoads.text = getString(R.string.total_loads_format, loads)
 
         Log.d("DEBUG", "Weight: $weight, Loads: $loads, Total Price: $totalPrice")
     }
@@ -213,33 +202,29 @@ class NewJobOrder : AppCompatActivity() {
         updateAddOnText()
     }
 
-    // Suspend function to ensure job order creation completes before redirection
     private suspend fun createJobOrder() {
         val weight = inputLaundryWeight.text.toString().toDoubleOrNull() ?: 0.0
         val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
         val loads = Math.ceil(weight / loadSize).toInt()
 
-        // Fetch the current promotion details
         val db = AppDatabase.getDatabase(this@NewJobOrder, lifecycleScope)
         val promotion = withContext(Dispatchers.IO) { db.promotionDao().getActivePromotion() }
 
         var isPromoApplied = false
         var finalTotalPrice = totalPrice
 
-        // Check if the promo is active and customer qualifies
         if (promotion != null && promotion.isPromoActive && selectedCustomer != null) {
             if (selectedCustomer!!.promo >= promotion.serviceFrequency) {
-                // Apply promo by deducting the price of one load (based on selected laundry type)
+
                 val pricePerLoad = if (selectedLaundryType == "Regular") laundryPrice.regular else laundryPrice.bedSheet
-                finalTotalPrice -= pricePerLoad // Deduct price for 1 free load
+                finalTotalPrice -= pricePerLoad
                 isPromoApplied = true
-                selectedCustomer!!.promo = 0 // Reset promo count after applying
+                selectedCustomer!!.promo = 0
             } else {
-                selectedCustomer!!.promo += 1 // Increment promo count if promo not applied
+                selectedCustomer!!.promo += 1
             }
         }
 
-        // Create the JobOrder with updated final price
         val jobOrder = JobOrder(
             customerName = selectedCustomer?.name ?: "",
             customerPhone = selectedCustomer?.phone ?: "",
@@ -248,32 +233,64 @@ class NewJobOrder : AppCompatActivity() {
             addOnDetergent = addOnDetergentCount,
             addOnFabricConditioner = addOnFabricConditionerCount,
             addOnBleach = addOnBleachCount,
-            totalPrice = finalTotalPrice, // Use the updated total price after promo application
+            totalPrice = finalTotalPrice,
             laundryType = selectedLaundryType,
             isActive = true
         )
 
-        // Insert job order and update customer promo count
         withContext(Dispatchers.IO) {
             db.jobOrderDao().insertJobOrder(jobOrder)
 
-            // Update customer's promo count
             selectedCustomer?.let {
                 db.customerDao().updateCustomerPromo(it.id, it.promo)
             }
         }
 
-        // Show a message indicating whether a promo was applied
+        val laundrySales = LaundrySales(
+            transactionDate = Date(),
+            laundryType = selectedLaundryType,
+            weight = weight,
+            loads = loads,
+            addOnDetergent = addOnDetergentCount,
+            addOnFabricConditioner = addOnFabricConditionerCount,
+            addOnBleach = addOnBleachCount,
+            totalPrice = finalTotalPrice
+        )
+
+        withContext(Dispatchers.IO) {
+            db.laundrySalesDao().insertLaundrySale(laundrySales)
+
+            val salesData = hashMapOf(
+                "transactionDate" to laundrySales.transactionDate,
+                "laundryType" to laundrySales.laundryType,
+                "weight" to laundrySales.weight,
+                "loads" to laundrySales.loads,
+                "addOnDetergent" to laundrySales.addOnDetergent,
+                "addOnFabricConditioner" to laundrySales.addOnFabricConditioner,
+                "addOnBleach" to laundrySales.addOnBleach,
+                "totalPrice" to laundrySales.totalPrice
+            )
+
+            val firestoreDb = FirebaseFirestore.getInstance()
+            firestoreDb.collection("laundry_sales")
+                .add(salesData)
+                .addOnSuccessListener {
+                    Log.d("NewJobOrder", "Laundry sales data successfully written to Firestore")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("NewJobOrder", "Error writing laundry sales data to Firestore", e)
+                }
+        }
+
         withContext(Dispatchers.Main) {
             if (isPromoApplied) {
                 Toast.makeText(this@NewJobOrder, "Promo applied! 1 load free.", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(this@NewJobOrder, "Job order created.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@NewJobOrder, "Job order and sales record created.", Toast.LENGTH_SHORT).show()
             }
             clearFields()
         }
     }
-
 
     private fun setupAddOnButtons() {
         findViewById<Button>(R.id.buttonPlusBleach).setOnClickListener {

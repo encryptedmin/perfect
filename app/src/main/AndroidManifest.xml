@@ -28,7 +28,7 @@
             android:name=".activities.AdminPromoMechanics"
             android:exported="false" />
         <activity
-            android:name=".activities.ActivityAdminSales"
+            android:name=".activities.AdminSalesActivity"
             android:exported="false" />
         <activity
             android:name=".activities.StoreItems"
