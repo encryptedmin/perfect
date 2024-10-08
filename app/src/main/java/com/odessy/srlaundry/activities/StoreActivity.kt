@@ -45,7 +45,10 @@ class StoreActivity : AppCompatActivity() {
         buttonConfirm = findViewById(R.id.buttonConfirm)
         textTotalPrice = findViewById(R.id.textTotalPrice)
 
-        // Load products from ViewModel (observing LiveData)
+        // Sync Firestore store items with Room
+        storeViewModel.fetchAndSyncStoreItemsFromFirestore()
+
+        // Load products from Room (observing LiveData)
         storeViewModel.allStoreItems.observe(this, { products ->
             val adapter = ArrayAdapter(
                 this@StoreActivity,
@@ -136,8 +139,7 @@ class StoreActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             for (item in cartItems) {
                 // Update quantity in Room and Firestore
-                val newQuantity = item.quantity - item.quantity
-                storeViewModel.updateQuantity(item.productName, newQuantity)
+                storeViewModel.updateQuantity(item.productName, item.quantity - item.quantity)
 
                 // Insert the transaction
                 storeViewModel.addTransaction(item, item.quantity)

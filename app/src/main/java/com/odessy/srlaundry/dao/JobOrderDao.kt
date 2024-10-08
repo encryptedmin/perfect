@@ -1,5 +1,6 @@
 package com.odessy.srlaundry.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.odessy.srlaundry.entities.JobOrder
 import com.odessy.srlaundry.others.LaundryAddons
@@ -7,8 +8,13 @@ import com.odessy.srlaundry.others.LaundryIncome
 import com.odessy.srlaundry.others.LaundryLoad
 
 @Dao
-interface JobOrderDao {
+interface JobOrderDao : BaseDao<JobOrder> {
 
+    @Query("SELECT * FROM joborder WHERE isActive = 1")
+    fun getAllActiveJobOrders(): LiveData<List<JobOrder>>
+
+    @Query("SELECT * FROM joborder")
+    fun getAllJobOrdersForSync(): List<JobOrder>
     @Insert
     suspend fun insertJobOrder(jobOrder: JobOrder)
 

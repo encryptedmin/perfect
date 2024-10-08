@@ -100,7 +100,7 @@ class AdminRegister : AppCompatActivity() {
             "role" to account.role
         )
 
-        firestoreDb.collection("users")
+        firestoreDb.collection("accounts")
             .add(accountData)
             .addOnSuccessListener {
                 // Success logging

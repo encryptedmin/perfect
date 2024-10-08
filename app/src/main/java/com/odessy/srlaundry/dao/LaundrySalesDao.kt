@@ -9,7 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
 @Dao
-interface LaundrySalesDao {
+interface LaundrySalesDao : BaseDao<LaundrySales> {
+
+    @Query("SELECT * FROM laundry_sales")
+    fun getAllLaundrySales(): List<LaundrySales>
+
+    @Query("SELECT * FROM laundry_sales WHERE id = :id")
+    suspend fun getSalesById(id: Int): LaundrySales?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLaundrySale(laundrySales: LaundrySales)

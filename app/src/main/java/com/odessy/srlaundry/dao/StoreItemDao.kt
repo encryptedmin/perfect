@@ -5,16 +5,19 @@ import androidx.room.*
 import com.odessy.srlaundry.entities.StoreItem
 
 @Dao
-interface StoreItemDao {
+interface StoreItemDao : BaseDao<StoreItem> {
 
+    @Query("SELECT * FROM store_items")
+    suspend fun getAllStoreItemsSync(): List<StoreItem> // Returns items for sync
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(storeItem: StoreItem)
+
+    override suspend fun insert(entity: StoreItem)
 
     @Update
-    suspend fun update(storeItem: StoreItem)
+    override suspend fun update(entity: StoreItem)
 
     @Delete
-    suspend fun delete(storeItem: StoreItem)
+    override suspend fun delete(entity: StoreItem)
 
     @Query("SELECT * FROM store_items ORDER BY productName ASC")
     fun getAllStoreItems(): LiveData<List<StoreItem>>
