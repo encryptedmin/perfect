@@ -28,7 +28,7 @@ class TransactionAdapter : RecyclerView.Adapter<TransactionAdapter.TransactionVi
         val transaction = transactions[position]
         holder.productName.text = transaction.productName
         holder.quantity.text = "Quantity: ${transaction.quantity}"
-        holder.totalPrice.text = "Total: $${transaction.totalPrice}"
+        holder.totalPrice.text = "Total: ₱${transaction.totalPrice}"
     }
 
     override fun getItemCount(): Int {

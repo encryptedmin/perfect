@@ -10,6 +10,7 @@ import com.odessy.srlaundry.entities.StoreItem
 import com.odessy.srlaundry.entities.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.*
 
@@ -38,15 +39,7 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Sync with Firestore
                 storeItemsCollection.document(storeItem.productName).set(storeItem)
-                    .addOnSuccessListener {
-                        // Log success or notify the UI if necessary
-                    }
-                    .addOnFailureListener { e ->
-                        // Handle the error in Firestore sync
-                        e.printStackTrace() // You can also log this or show a message in UI
-                    }
             } catch (e: Exception) {
-                // Handle any Room database issues
                 e.printStackTrace()
             }
         }
@@ -61,17 +54,16 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Sync updated quantity with Firestore
                 storeItemsCollection.document(productName).update("quantity", newQuantity)
-                    .addOnSuccessListener {
-                        // Log success or notify the UI if necessary
-                    }
-                    .addOnFailureListener { e ->
-                        // Handle the error in Firestore sync
-                        e.printStackTrace() // You can also log this or show a message in UI
-                    }
             } catch (e: Exception) {
-                // Handle any Room database issues
                 e.printStackTrace()
             }
+        }
+    }
+
+    // Get a store item by name from Room (suspendable function)
+    suspend fun getStoreItemByName(productName: String): StoreItem? {
+        return withContext(Dispatchers.IO) {
+            storeItemDao.getStoreItemByName(productName)
         }
     }
 
@@ -98,34 +90,24 @@ class StoreViewModel(application: Application) : AndroidViewModel(application) {
 
                 // Sync the transaction with Firestore
                 transactionsCollection.add(transaction)
-                    .addOnSuccessListener {
-                        // Log success or notify the UI if necessary
-                    }
-                    .addOnFailureListener { e ->
-                        // Handle the error in Firestore sync
-                        e.printStackTrace() // You can also log this or show a message in UI
-                    }
             } catch (e: Exception) {
-                // Handle any Room database issues
                 e.printStackTrace()
             }
         }
     }
 
-    // Sync store items from Firestore to Room (useful when starting the app or refreshing)
+    // Fetch and sync store items from Firestore to Room
     fun fetchAndSyncStoreItemsFromFirestore() {
-        storeItemsCollection.get()
-            .addOnSuccessListener { result ->
-                viewModelScope.launch(Dispatchers.IO) {
-                    for (document in result) {
-                        val storeItem = document.toObject(StoreItem::class.java)
-                        storeItemDao.insertOrUpdate(storeItem) // Sync with Room
-                    }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val snapshot = storeItemsCollection.get().await()
+                val storeItems = snapshot.toObjects(StoreItem::class.java)
+                storeItems.forEach { storeItem ->
+                    storeItemDao.insertOrUpdate(storeItem)
                 }
-            }
-            .addOnFailureListener { e ->
-                // Handle failure here
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
     }
 }

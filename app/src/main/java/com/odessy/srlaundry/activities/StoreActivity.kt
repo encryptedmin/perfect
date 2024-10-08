@@ -138,11 +138,19 @@ class StoreActivity : AppCompatActivity() {
     private fun confirmPurchase() {
         lifecycleScope.launch(Dispatchers.IO) {
             for (item in cartItems) {
-                // Update quantity in Room and Firestore
-                storeViewModel.updateQuantity(item.productName, item.quantity - item.quantity)
+                val purchasedQuantity = item.quantity
 
-                // Insert the transaction
-                storeViewModel.addTransaction(item, item.quantity)
+                // Fetch the actual stock from Room using a suspend function
+                val storeItem = storeViewModel.getStoreItemByName(item.productName)
+
+                storeItem?.let {
+                    // Subtract the purchased quantity from the actual stock
+                    val updatedQuantity = storeItem.quantity - purchasedQuantity
+
+                    // Update quantity in Room and Firestore
+                    storeViewModel.updateQuantity(storeItem.productName, updatedQuantity)
+                    storeViewModel.addTransaction(item, purchasedQuantity)  // Insert transaction
+                }
             }
 
             // Check if any items are low in stock after the purchase
@@ -155,6 +163,7 @@ class StoreActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun checkLowStock() {
         lifecycleScope.launch {

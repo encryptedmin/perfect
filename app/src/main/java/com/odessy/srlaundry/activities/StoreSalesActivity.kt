@@ -86,7 +86,7 @@ class StoreSalesActivity : AppCompatActivity() {
 
                 // Update ListView with sales records
                 val salesRecords = transactions.map {
-                    "Product: ${it.productName}, Qty: ${it.quantity}, Total: $${it.totalPrice}"
+                    "Product: ${it.productName}, Qty: ${it.quantity}, Total: ₱${it.totalPrice}"
                 }
                 val adapter = ArrayAdapter(
                     this,
@@ -97,7 +97,7 @@ class StoreSalesActivity : AppCompatActivity() {
 
                 // Calculate and display total sales
                 val totalSales = transactions.sumOf { it.totalPrice }
-                textViewTotalSales.text = "Total Sales: $${"%.2f".format(totalSales)}"
+                textViewTotalSales.text = "Total Sales: ₱${"%.2f".format(totalSales)}"
             }
             .addOnFailureListener { e ->
                 // Handle the error (e.g., show a toast)
