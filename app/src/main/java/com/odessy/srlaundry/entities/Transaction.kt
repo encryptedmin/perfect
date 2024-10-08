@@ -12,3 +12,6 @@ data class Transaction(
     val totalPrice: Double,
     val timestamp: Date
 )
+{
+    constructor(): this(0,"",0,0.0,Date())
+}

@@ -1,70 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
     tools:context=".activities.StoreSalesActivity">
 
-
-    <TextView
-        android:id="@+id/titleSales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Store Sales"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/titleSales"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:gravity="center">
 
         <Button
-            android:id="@+id/buttonFromDate"
-            android:layout_width="0dp"
+            android:id="@+id/buttonDailySales"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Daily Sales"
             android:layout_weight="1"
-            android:text="From Date"/>
+            android:layout_margin="8dp"/>
 
         <Button
-            android:id="@+id/buttonToDate"
-            android:layout_width="0dp"
+            android:id="@+id/buttonWeeklySales"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Weekly Sales"
             android:layout_weight="1"
-            android:text="To Date"/>
+            android:layout_margin="8dp"/>
+
+        <Button
+            android:id="@+id/buttonMonthlySales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Monthly Sales"
+            android:layout_weight="1"
+            android:layout_margin="8dp"/>
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/transactionRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="580dp"
-        app:layout_constraintTop_toBottomOf="@id/buttonFromDate"
-        app:layout_constraintBottom_toTopOf="@id/textTotalSales"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="NotSibling" />
+    <TextView
+        android:id="@+id/textViewDateRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select a sales period"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"/>
 
+    <ListView
+        android:id="@+id/listViewSalesRecords"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:dividerHeight="1dp"/>
 
     <TextView
-        android:id="@+id/textTotalSales"
+        android:id="@+id/textViewTotalSales"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Sales: $0.00"
         android:textSize="18sp"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_margin="16dp"/>
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

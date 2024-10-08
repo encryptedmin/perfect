@@ -28,8 +28,8 @@ interface StoreItemDao {
     @Query("SELECT * FROM store_items")
     suspend fun getAllItems(): List<StoreItem>
 
-    @Query("SELECT * FROM store_items WHERE id = :id")
-    suspend fun getStoreItemById(id: Int): StoreItem?
+    @Query("SELECT * FROM store_items WHERE productName = :productName")
+    suspend fun getStoreItemByProductName(productName: String): StoreItem?
 
     @Insert
     suspend fun insertStoreItem(item: StoreItem)
@@ -37,11 +37,24 @@ interface StoreItemDao {
     @Update
     suspend fun updateStoreItem(item: StoreItem)
 
-    @Query("UPDATE store_items SET quantity = :newQuantity WHERE id = :itemId")
-    suspend fun updateQuantity(itemId: Int, newQuantity: Int)
+    @Query("UPDATE store_items SET quantity = :newQuantity WHERE productName = :productName")
+    suspend fun updateQuantity(productName: String, newQuantity: Int)
+
 
     @Query("SELECT * FROM store_items WHERE quantity < :threshold")
     suspend fun getItemsBelowThreshold(threshold: Int): List<StoreItem>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOrUpdate(storeItem: StoreItem)
+
+    @Transaction
+    fun syncStoreItems(storeItems: List<StoreItem>) {
+
+        deleteAllStoreItems()
+        storeItems.forEach { insertOrUpdate(it) }
+    }
+
+    @Query("DELETE FROM store_items")
+    fun deleteAllStoreItems()
 
 }

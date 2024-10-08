@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.odessy.srlaundry.R
-import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.StoreItem
-import com.odessy.srlaundry.entities.Transaction
+import com.odessy.srlaundry.others.StoreViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
 
 class StoreActivity : AppCompatActivity() {
 
@@ -27,7 +24,8 @@ class StoreActivity : AppCompatActivity() {
     private lateinit var buttonConfirm: Button
     private lateinit var textTotalPrice: TextView
 
-    private lateinit var db: AppDatabase
+    private val storeViewModel: StoreViewModel by viewModels()
+
     private var selectedStoreItem: StoreItem? = null
     private var cartItems = mutableListOf<StoreItem>()
     private var totalPrice = 0.0
@@ -47,16 +45,33 @@ class StoreActivity : AppCompatActivity() {
         buttonConfirm = findViewById(R.id.buttonConfirm)
         textTotalPrice = findViewById(R.id.textTotalPrice)
 
-        // Initialize database
-        db = AppDatabase.getDatabase(applicationContext, lifecycleScope)
+        // Load products from ViewModel (observing LiveData)
+        storeViewModel.allStoreItems.observe(this, { products ->
+            val adapter = ArrayAdapter(
+                this@StoreActivity,
+                android.R.layout.simple_list_item_1,
+                products.map { it.productName }
+            )
+            productListView.adapter = adapter
 
-        // Load products from the database
-        loadProducts()
+            productListView.setOnItemClickListener { _, _, position, _ ->
+                selectedStoreItem = products[position]
+                inputQuantity.isEnabled = true
+                buttonAdd.isEnabled = true
+            }
+        })
 
         // Set up search functionality
         searchProductBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                searchProducts(s.toString())
+                storeViewModel.searchStoreItems(s.toString()).observe(this@StoreActivity, { products ->
+                    val adapter = ArrayAdapter(
+                        this@StoreActivity,
+                        android.R.layout.simple_list_item_1,
+                        products.map { it.productName }
+                    )
+                    productListView.adapter = adapter
+                })
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -80,38 +95,9 @@ class StoreActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadProducts() {
-        db.storeItemDao().getAllStoreItems().observe(this, Observer { products ->
-            val adapter = ArrayAdapter(
-                this@StoreActivity,
-                android.R.layout.simple_list_item_1,
-                products.map { it.productName }
-            )
-            productListView.adapter = adapter
-
-            productListView.setOnItemClickListener { _, _, position, _ ->
-                selectedStoreItem = products[position]
-                inputQuantity.isEnabled = true
-                buttonAdd.isEnabled = true
-            }
-        })
-    }
-
-    private fun searchProducts(query: String) {
-        db.storeItemDao().searchStoreItems("%$query%").observe(this, Observer { products ->
-            val adapter = ArrayAdapter(
-                this@StoreActivity,
-                android.R.layout.simple_list_item_1,
-                products.map { it.productName }
-            )
-            productListView.adapter = adapter
-        })
-    }
-
     private fun addItemToCart(quantity: Int) {
         selectedStoreItem?.let { item ->
             if (quantity > item.quantity) {
-                // If requested quantity exceeds available stock, show an error
                 Toast.makeText(this, "Not enough stock available", Toast.LENGTH_SHORT).show()
                 return
             }
@@ -148,40 +134,29 @@ class StoreActivity : AppCompatActivity() {
 
     private fun confirmPurchase() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val transactionDao = db.transactionDao()
-            val storeItemDao = db.storeItemDao()
-
             for (item in cartItems) {
-                // Deduct quantity from StoreItem after purchase
+                // Update quantity in Room and Firestore
                 val newQuantity = item.quantity - item.quantity
-                storeItemDao.updateQuantity(item.id, newQuantity)
+                storeViewModel.updateQuantity(item.productName, newQuantity)
 
-                // Insert the transaction record
-                val transaction = Transaction(
-                    id = item.id,
-                    productName = item.productName,
-                    quantity = item.quantity,
-                    totalPrice = item.price * item.quantity,
-                    timestamp = Date()
-                )
-                transactionDao.insertTransaction(transaction)
+                // Insert the transaction
+                storeViewModel.addTransaction(item, item.quantity)
             }
 
             // Check if any items are low in stock after the purchase
             checkLowStock()
 
             // Clear cart after confirming purchase
-            withContext(Dispatchers.Main) {
+            launch(Dispatchers.Main) {
                 clearCart()
                 Toast.makeText(this@StoreActivity, "Purchase Confirmed", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private suspend fun checkLowStock() {
-        val lowStockItems = db.storeItemDao().getItemsBelowThreshold(lowStockThreshold)
-
-        withContext(Dispatchers.Main) {
+    private fun checkLowStock() {
+        lifecycleScope.launch {
+            val lowStockItems = storeViewModel.checkLowStock(lowStockThreshold)
             if (lowStockItems.isNotEmpty()) {
                 val lowStockMessage = lowStockItems.joinToString(", ") { it.productName }
                 Toast.makeText(this@StoreActivity, "Low stock alert: $lowStockMessage", Toast.LENGTH_LONG).show()

@@ -30,6 +30,9 @@ class StoreItems : AppCompatActivity() {
         binding.rvProducts.adapter = adapter
         binding.rvProducts.layoutManager = LinearLayoutManager(this)
 
+        // Sync store items from Firestore to Room on activity start
+        storeItemViewModel.syncStoreItems()
+
         // Add new product to the database when the button is clicked
         binding.btnAddProduct.setOnClickListener {
             val name = binding.etProductName.text.toString()
@@ -38,11 +41,13 @@ class StoreItems : AppCompatActivity() {
 
             if (name.isNotEmpty() && quantity > 0 && price > 0) {
                 val storeItem = StoreItem(productName = name, quantity = quantity, price = price)
-                storeItemViewModel.addOrUpdateStoreItem(storeItem) // Change to addOrUpdateStoreItem
+                storeItemViewModel.addOrUpdateStoreItem(storeItem)
             }
         }
+
+        // Go back to previous activity
         binding.btnBack.setOnClickListener {
-            finish() // Finish the current activity and return to the previous one
+            finish()
         }
 
         // Observe the LiveData from the ViewModel and update the RecyclerView

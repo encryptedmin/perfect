@@ -1,41 +1,76 @@
 package com.odessy.srlaundry.others
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.StoreItem
+import com.odessy.srlaundry.entities.Transaction
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 
-class StoreViewModel : ViewModel() {
+class StoreViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _selectedItem = MutableLiveData<StoreItem?>()
-    val selectedItem: LiveData<StoreItem?> = _selectedItem
+    private val storeItemDao = AppDatabase.getDatabase(application, viewModelScope).storeItemDao()
+    private val transactionDao = AppDatabase.getDatabase(application, viewModelScope).transactionDao()
 
-    private val _cartItems = MutableLiveData<MutableList<StoreItem>>()
-    val cartItems: LiveData<MutableList<StoreItem>> = _cartItems
+    private val storeItemsCollection = FirebaseFirestore.getInstance().collection("store_items")
+    private val transactionsCollection = FirebaseFirestore.getInstance().collection("transactions")
 
-    private var totalPrice = 0.0
 
-    init {
-        _cartItems.value = mutableListOf()
+    val allStoreItems: LiveData<List<StoreItem>> = storeItemDao.getAllStoreItems()
+
+
+    fun searchStoreItems(query: String): LiveData<List<StoreItem>> {
+        return storeItemDao.searchStoreItems("%$query%")
     }
 
-    fun selectItem(item: StoreItem) {
-        _selectedItem.value = item
+    fun addOrUpdateStoreItem(storeItem: StoreItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            storeItemDao.insertOrUpdate(storeItem)
+
+            storeItemsCollection.document(storeItem.productName).set(storeItem)
+        }
     }
 
-    fun addItemToCart(quantity: Int) {
-        val item = _selectedItem.value ?: return
-        val cartItem = item.copy(quantity = quantity)
-        _cartItems.value?.add(cartItem)
-        totalPrice += cartItem.price * cartItem.quantity
+    fun updateQuantity(productName: String, newQuantity: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            storeItemDao.updateQuantity(productName, newQuantity)
+
+
+            storeItemsCollection.document(productName).update("quantity", newQuantity)
+        }
     }
 
-    fun clearCart() {
-        _cartItems.value?.clear()
-        totalPrice = 0.0
+    suspend fun checkLowStock(threshold: Int): List<StoreItem> {
+        return withContext(Dispatchers.IO) {
+            storeItemDao.getItemsBelowThreshold(threshold)
+        }
     }
 
-    fun getTotalPrice(): String {
-        return "Total: $$totalPrice"
+    fun addTransaction(storeItem: StoreItem, quantity: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val transaction = Transaction(
+                productName = storeItem.productName,
+                quantity = quantity,
+                totalPrice = storeItem.price * quantity,
+                timestamp = Date()
+            )
+
+            transactionDao.insertTransaction(transaction)
+
+
+            transactionsCollection.add(transaction)
+                .addOnSuccessListener {
+
+                }
+                .addOnFailureListener { e ->
+
+                }
+        }
     }
 }
