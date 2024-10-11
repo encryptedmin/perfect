@@ -8,10 +8,10 @@ import java.util.*
 
 
 data class SmsMessage(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = false) val id: Int = 1,
     val message: String,
     val timestamp: Date
 ) {
-    // Firestore requires a no-arg constructor
-    constructor() : this(0, "", Date())
+
+    constructor() : this(1, "", Date())
 }

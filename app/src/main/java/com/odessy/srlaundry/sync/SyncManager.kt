@@ -15,7 +15,7 @@ class SyncManager(private val context: Context, private val scope: CoroutineScop
         syncJobOrders()
         syncLaundrySales()
         syncTransactions()
-        syncSmsMessages()  // Sync SMS messages
+        //syncSmsMessages()
         syncStoreItems()    // Sync Store Items
     }
 
@@ -41,12 +41,12 @@ class SyncManager(private val context: Context, private val scope: CoroutineScop
     }
 
 
-    private suspend fun syncSmsMessages() {
+    /*private suspend fun syncSmsMessages() {
         val smsMessages = db.smsMessageDao().getAllSmsMessages()
         syncDataToFirestore(firestoreDb.collection("sms_messages"), smsMessages) { message ->
             message.id.toString()
         }
-    }
+    }*/
 
 
     private suspend fun syncStoreItems() {

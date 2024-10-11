@@ -8,3 +8,6 @@ data class Promotion(
     var serviceFrequency: Int,
     var isPromoActive: Boolean
 )
+{
+    constructor(): this(1,0, false)
+}

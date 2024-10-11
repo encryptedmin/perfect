@@ -7,11 +7,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.odessy.srlaundry.R
 import com.odessy.srlaundry.database.AppDatabase
 import com.odessy.srlaundry.entities.Accounts
+import com.odessy.srlaundry.others.PromoViewModel
+import com.odessy.srlaundry.others.SmsMessageViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -23,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var passwordInput: EditText
     private lateinit var loginButton: Button
     private lateinit var exitButton: Button
+    private lateinit var smsMessageViewModel: SmsMessageViewModel
+    private lateinit var promoViewModel: PromoViewModel
     private val firestoreDb = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +36,10 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize the database with lifecycleScope
         db = AppDatabase.getDatabase(this, lifecycleScope)
+
+        // Initialize the ViewModel for SMS messages and promotions
+        smsMessageViewModel = ViewModelProvider(this).get(SmsMessageViewModel::class.java)
+        promoViewModel = ViewModelProvider(this).get(PromoViewModel::class.java)
 
         // Find views
         emailInput = findViewById(R.id.editTextEmail)
@@ -41,8 +50,10 @@ class MainActivity : AppCompatActivity() {
         // Insert default admin account if no accounts exist
         insertDefaultAdminAccount()
 
-        // Sync accounts from Firestore to Room when app starts
+        // Sync accounts and promotions from Firestore to Room when app starts
         syncAccountsFromFirestoreToRoom()
+        syncPromoFromFirestore()
+        syncSmsMessagesFromFirestore()
 
         // Handle Login (Querying the database)
         loginButton.setOnClickListener {
@@ -132,5 +143,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // Sync promotions from Firestore to Room
+    private fun syncPromoFromFirestore() {
+        promoViewModel.syncPromoFromFirestore() // Use the ViewModel method to sync promotions
+    }
+
+    // Sync SMS messages from Firestore to Room
+    private fun syncSmsMessagesFromFirestore() {
+        smsMessageViewModel.syncSmsMessagesFromFirestore() // Use the ViewModel method to sync SMS messages
     }
 }

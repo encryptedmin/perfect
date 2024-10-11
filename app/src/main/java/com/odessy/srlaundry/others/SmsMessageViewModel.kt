@@ -10,14 +10,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
+// SmsMessageViewModel.kt
 class SmsMessageViewModel(application: Application) : AndroidViewModel(application) {
 
     private val smsMessageDao = AppDatabase.getDatabase(application, viewModelScope).smsMessageDao()
     private val firestoreDb = FirebaseFirestore.getInstance().collection("sms_messages")
 
-    // Insert SMS message into Room and Firestore
+
     fun insertSmsMessage(message: String) {
         val smsMessage = SmsMessage(
+            id = 1, // Fixed ID
             message = message,
             timestamp = Date()
         )
@@ -27,13 +29,35 @@ class SmsMessageViewModel(application: Application) : AndroidViewModel(applicati
             smsMessageDao.insert(smsMessage)
 
             // Sync with Firestore (cloud database)
-            firestoreDb.add(smsMessage)
+            firestoreDb.document("1").set(smsMessage)
                 .addOnSuccessListener {
                     // Message successfully written to Firestore
                 }
                 .addOnFailureListener { e ->
                     // Handle Firestore failure
                     e.printStackTrace()
+                }
+        }
+    }
+
+
+    fun syncSmsMessagesFromFirestore() {
+        viewModelScope.launch(Dispatchers.IO) {
+            firestoreDb.get()
+                .addOnSuccessListener { documents ->
+                    // Delete all local messages before sync
+                    viewModelScope.launch(Dispatchers.IO) {
+                        smsMessageDao.deleteAllSmsMessages()
+
+                        // Insert Firestore messages into Room
+                        for (document in documents) {
+                            val message = document.toObject(SmsMessage::class.java)
+                            smsMessageDao.insert(message)
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    e.printStackTrace() // Handle Firestore failure
                 }
         }
     }

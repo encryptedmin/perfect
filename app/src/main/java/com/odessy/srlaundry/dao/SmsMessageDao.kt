@@ -12,6 +12,11 @@ interface SmsMessageDao : BaseDao<SmsMessage> {
     @Query("SELECT * FROM SmsMessage LIMIT 1")
     suspend fun getSmsMessage(): SmsMessage?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE) // or OnConflictStrategy.IGNORE
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     override suspend fun insert(entity: SmsMessage)
+
+    // Delete all messages
+    @Query("DELETE FROM SmsMessage")
+    suspend fun deleteAllSmsMessages()
+
 }
