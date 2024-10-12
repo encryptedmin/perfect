@@ -27,6 +27,7 @@ class StoreActivity : AppCompatActivity() {
     private val storeViewModel: StoreViewModel by viewModels()
 
     private var selectedStoreItem: StoreItem? = null
+    private var selectedPosition: Int = -1  // Track the selected position
     private var cartItems = mutableListOf<StoreItem>()
     private var totalPrice = 0.0
     private val lowStockThreshold = 10
@@ -34,7 +35,6 @@ class StoreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store)
-
 
         searchProductBar = findViewById(R.id.searchProductBar)
         productListView = findViewById(R.id.productListView)
@@ -45,33 +45,32 @@ class StoreActivity : AppCompatActivity() {
         buttonConfirm = findViewById(R.id.buttonConfirm)
         textTotalPrice = findViewById(R.id.textTotalPrice)
 
-
         storeViewModel.fetchAndSyncStoreItemsFromFirestore()
 
-
         storeViewModel.allStoreItems.observe(this, { products ->
-            val adapter = ArrayAdapter(
+            val adapter = CustomArrayAdapter(
                 this@StoreActivity,
                 android.R.layout.simple_list_item_1,
-                products.map { it.productName }
+                products.map { "${it.productName} - Available: ${it.quantity}" }
             )
             productListView.adapter = adapter
 
-            productListView.setOnItemClickListener { _, _, position, _ ->
+            productListView.setOnItemClickListener { _, view, position, _ ->
                 selectedStoreItem = products[position]
+                selectedPosition = position
+                adapter.setSelectedPosition(position)  // Highlight selected item
                 inputQuantity.isEnabled = true
                 buttonAdd.isEnabled = true
             }
         })
 
-
         searchProductBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 storeViewModel.searchStoreItems(s.toString()).observe(this@StoreActivity, { products ->
-                    val adapter = ArrayAdapter(
+                    val adapter = CustomArrayAdapter(
                         this@StoreActivity,
                         android.R.layout.simple_list_item_1,
-                        products.map { it.productName }
+                        products.map { "${it.productName} - Available: ${it.quantity}" }
                     )
                     productListView.adapter = adapter
                 })
@@ -81,17 +80,14 @@ class StoreActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-
         buttonAdd.setOnClickListener {
             val quantity = inputQuantity.text.toString().toIntOrNull() ?: return@setOnClickListener
             addItemToCart(quantity)
         }
 
-
         buttonConfirm.setOnClickListener {
             confirmPurchase()
         }
-
 
         buttonClear.setOnClickListener {
             clearCart()
@@ -139,22 +135,16 @@ class StoreActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             for (item in cartItems) {
                 val purchasedQuantity = item.quantity
-
-
                 val storeItem = storeViewModel.getStoreItemByName(item.productName)
 
                 storeItem?.let {
-
                     val updatedQuantity = storeItem.quantity - purchasedQuantity
-
-
                     storeViewModel.updateQuantity(storeItem.productName, updatedQuantity)
                     storeViewModel.addTransaction(item, purchasedQuantity)
                 }
             }
 
             checkLowStock()
-
 
             launch(Dispatchers.Main) {
                 clearCart()
@@ -170,6 +160,30 @@ class StoreActivity : AppCompatActivity() {
                 val lowStockMessage = lowStockItems.joinToString(", ") { it.productName }
                 Toast.makeText(this@StoreActivity, "Low stock alert: $lowStockMessage", Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    // Custom ArrayAdapter to handle item highlighting
+    private class CustomArrayAdapter(context: StoreActivity, resource: Int, objects: List<String>) :
+        ArrayAdapter<String>(context, resource, objects) {
+
+        private var selectedPosition = -1
+
+        fun setSelectedPosition(position: Int) {
+            selectedPosition = position
+            notifyDataSetChanged()  // Notify the adapter to refresh the ListView
+        }
+
+        override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
+            val view = super.getView(position, convertView, parent)
+            if (position == selectedPosition) {
+                // Highlight the selected item
+                view.setBackgroundColor(android.graphics.Color.parseColor("#FFDFD991"))  // Custom highlight color
+            } else {
+                // Reset the background for non-selected items
+                view.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            }
+            return view
         }
     }
 }

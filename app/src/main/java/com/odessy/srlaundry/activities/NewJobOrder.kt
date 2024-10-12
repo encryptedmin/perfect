@@ -64,6 +64,7 @@ class NewJobOrder : AppCompatActivity() {
         buttonClearFields = findViewById(R.id.buttonClearFields)
         buttonCancel = findViewById(R.id.buttonCancel)
 
+        // Initially disable confirm button
         buttonConfirm.isEnabled = false
     }
 
@@ -79,7 +80,7 @@ class NewJobOrder : AppCompatActivity() {
 
         customerListView.setOnItemClickListener { _, _, position, _ ->
             selectedCustomer = customerListView.getItemAtPosition(position) as? Customer
-            buttonConfirm.isEnabled = selectedCustomer != null
+            validateInputs()
         }
     }
 
@@ -98,6 +99,7 @@ class NewJobOrder : AppCompatActivity() {
         inputLaundryWeight.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 calculateTotalPrice()
+                validateInputs()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -119,7 +121,6 @@ class NewJobOrder : AppCompatActivity() {
         }
 
         buttonConfirm.setOnClickListener {
-
             lifecycleScope.launch {
                 createJobOrder()
                 startActivity(Intent(this@NewJobOrder, UserLaundry::class.java))
@@ -202,7 +203,16 @@ class NewJobOrder : AppCompatActivity() {
     }
 
     private suspend fun createJobOrder() {
-        val weight = inputLaundryWeight.text.toString().toDoubleOrNull() ?: 0.0
+        val weight = inputLaundryWeight.text.toString().toDoubleOrNull()
+
+        // Check if the weight is valid
+        if (weight == null || weight <= 0.0) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@NewJobOrder, "Please enter a valid weight.", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
         val loadSize = if (selectedLaundryType == "Regular") 8.0 else 6.0
         val loads = Math.ceil(weight / loadSize).toInt()
 
@@ -214,7 +224,6 @@ class NewJobOrder : AppCompatActivity() {
 
         if (promotion != null && promotion.isPromoActive && selectedCustomer != null) {
             if (selectedCustomer!!.promo >= promotion.serviceFrequency) {
-
                 val pricePerLoad = if (selectedLaundryType == "Regular") laundryPrice.regular else laundryPrice.bedSheet
                 finalTotalPrice -= pricePerLoad
                 isPromoApplied = true
@@ -289,6 +298,11 @@ class NewJobOrder : AppCompatActivity() {
             }
             clearFields()
         }
+    }
+
+    private fun validateInputs() {
+        val weightValid = inputLaundryWeight.text.toString().toDoubleOrNull() ?: 0.0 > 0.0
+        buttonConfirm.isEnabled = selectedCustomer != null && weightValid
     }
 
     private fun setupAddOnButtons() {
