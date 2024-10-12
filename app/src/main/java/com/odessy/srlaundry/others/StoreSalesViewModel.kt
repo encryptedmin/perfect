@@ -17,7 +17,7 @@ class StoreSalesViewModel(private val context: Context) : ViewModel() {
 
     fun loadTransactions(fromDate: Long? = null, toDate: Long? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            val db = AppDatabase.getDatabase(context, viewModelScope) // Pass context here
+            val db = AppDatabase.getDatabase(context, viewModelScope)
             val transactions = if (fromDate != null && toDate != null) {
                 db.transactionDao().getTransactionsBetweenDates(fromDate, toDate)
             } else {

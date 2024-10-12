@@ -18,7 +18,7 @@ interface CustomerDao {
     @Query("SELECT * FROM Customer")
     suspend fun getAllCustomers(): List<Customer>
 
-    // New query to update the promo count
+
     @Query("UPDATE Customer SET promo = :newPromoCount WHERE id = :customerId")
     suspend fun updatePromoCount(customerId: Int, newPromoCount: Int)
 

@@ -22,7 +22,7 @@ interface AccountsDao : BaseDao<Accounts> {
     suspend fun insertAndSync(account: Accounts) {
         insert(account)
 
-        // Sync to Firestore
+
         withContext(Dispatchers.IO) {
             val firestoreDb = FirebaseFirestore.getInstance()
             firestoreDb.collection("users").document(account.username).set(account)

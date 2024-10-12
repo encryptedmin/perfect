@@ -10,6 +10,6 @@ data class Customer(@PrimaryKey(autoGenerate = true) val id: Int = 0,
 )
 {
     override fun toString(): String {
-        return name // This will ensure only the name is displayed
+        return name
     }
 }

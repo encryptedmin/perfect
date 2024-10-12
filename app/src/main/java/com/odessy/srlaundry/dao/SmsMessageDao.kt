@@ -15,7 +15,7 @@ interface SmsMessageDao : BaseDao<SmsMessage> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     override suspend fun insert(entity: SmsMessage)
 
-    // Delete all messages
+
     @Query("DELETE FROM SmsMessage")
     suspend fun deleteAllSmsMessages()
 

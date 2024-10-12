@@ -19,21 +19,20 @@ class StoreItems : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize View Binding
+
         binding = ActivityStoreItemsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Initialize RecyclerView and Adapter
+
         val adapter = StoreItemAdapter(emptyList()) { item ->
             storeItemViewModel.delete(item) // Handle deletion
         }
         binding.rvProducts.adapter = adapter
         binding.rvProducts.layoutManager = LinearLayoutManager(this)
 
-        // Sync store items from Firestore to Room on activity start
+
         storeItemViewModel.syncStoreItems()
 
-        // Add new product to the database when the button is clicked
         binding.btnAddProduct.setOnClickListener {
             val name = binding.etProductName.text.toString()
             val quantity = binding.etProductQuantity.text.toString().toIntOrNull() ?: 0
@@ -45,17 +44,16 @@ class StoreItems : AppCompatActivity() {
             }
         }
 
-        // Go back to previous activity
+
         binding.btnBack.setOnClickListener {
             finish()
         }
 
-        // Observe the LiveData from the ViewModel and update the RecyclerView
+
         storeItemViewModel.allStoreItems.observe(this, { items ->
             adapter.submitList(items)
         })
 
-        // Search for items in the database when the search text is updated
         binding.etSearchProduct.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 

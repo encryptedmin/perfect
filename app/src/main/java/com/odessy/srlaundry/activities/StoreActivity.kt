@@ -35,7 +35,7 @@ class StoreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store)
 
-        // Initialize UI elements
+
         searchProductBar = findViewById(R.id.searchProductBar)
         productListView = findViewById(R.id.productListView)
         cartListView = findViewById(R.id.cartListView)
@@ -45,10 +45,10 @@ class StoreActivity : AppCompatActivity() {
         buttonConfirm = findViewById(R.id.buttonConfirm)
         textTotalPrice = findViewById(R.id.textTotalPrice)
 
-        // Sync Firestore store items with Room
+
         storeViewModel.fetchAndSyncStoreItemsFromFirestore()
 
-        // Load products from Room (observing LiveData)
+
         storeViewModel.allStoreItems.observe(this, { products ->
             val adapter = ArrayAdapter(
                 this@StoreActivity,
@@ -64,7 +64,7 @@ class StoreActivity : AppCompatActivity() {
             }
         })
 
-        // Set up search functionality
+
         searchProductBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 storeViewModel.searchStoreItems(s.toString()).observe(this@StoreActivity, { products ->
@@ -81,18 +81,18 @@ class StoreActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        // Add product to cart with quantity validation
+
         buttonAdd.setOnClickListener {
             val quantity = inputQuantity.text.toString().toIntOrNull() ?: return@setOnClickListener
             addItemToCart(quantity)
         }
 
-        // Confirm purchase and update stock
+
         buttonConfirm.setOnClickListener {
             confirmPurchase()
         }
 
-        // Clear cart
+
         buttonClear.setOnClickListener {
             clearCart()
         }
@@ -125,7 +125,7 @@ class StoreActivity : AppCompatActivity() {
     }
 
     private fun updateTotalPrice() {
-        textTotalPrice.text = "Total: $$totalPrice"
+        textTotalPrice.text = "Total: ₱$totalPrice"
     }
 
     private fun clearCart() {
@@ -140,30 +140,28 @@ class StoreActivity : AppCompatActivity() {
             for (item in cartItems) {
                 val purchasedQuantity = item.quantity
 
-                // Fetch the actual stock from Room using a suspend function
+
                 val storeItem = storeViewModel.getStoreItemByName(item.productName)
 
                 storeItem?.let {
-                    // Subtract the purchased quantity from the actual stock
+
                     val updatedQuantity = storeItem.quantity - purchasedQuantity
 
-                    // Update quantity in Room and Firestore
+
                     storeViewModel.updateQuantity(storeItem.productName, updatedQuantity)
-                    storeViewModel.addTransaction(item, purchasedQuantity)  // Insert transaction
+                    storeViewModel.addTransaction(item, purchasedQuantity)
                 }
             }
 
-            // Check if any items are low in stock after the purchase
             checkLowStock()
 
-            // Clear cart after confirming purchase
+
             launch(Dispatchers.Main) {
                 clearCart()
                 Toast.makeText(this@StoreActivity, "Purchase Confirmed", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 
     private fun checkLowStock() {
         lifecycleScope.launch {

@@ -38,7 +38,7 @@ class StoreItemAdapter(
 
     override fun getItemCount(): Int = storeItems.size
 
-    // Update the list of store items
+
     fun submitList(newItems: List<StoreItem>) {
         storeItems = newItems
         notifyDataSetChanged()

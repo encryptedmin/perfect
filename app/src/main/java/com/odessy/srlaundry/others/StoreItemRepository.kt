@@ -8,19 +8,19 @@ class StoreItemRepository(private val storeItemDao: StoreItemDao) {
 
     val allStoreItems: LiveData<List<StoreItem>> = storeItemDao.getAllStoreItems()
 
-    // Method to add or update a store item
+
     suspend fun addOrUpdateStoreItem(storeItem: StoreItem) {
         val existingItem = storeItemDao.getStoreItemByName(storeItem.productName)
         if (existingItem != null) {
-            // Update the existing item's price and quantity
+
             val updatedItem = existingItem.copy(
-                price = storeItem.price, // Update price
-                quantity = existingItem.quantity + storeItem.quantity // Update quantity
+                price = storeItem.price,
+                quantity = existingItem.quantity + storeItem.quantity
             )
-            storeItemDao.update(updatedItem) // Use update method
+            storeItemDao.update(updatedItem)
         } else {
-            // Insert new item if it doesn't exist
-            storeItemDao.insert(storeItem) // Use insert method
+
+            storeItemDao.insert(storeItem)
         }
     }
 

@@ -34,39 +34,34 @@ class UserLaundry : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_laundry)
 
-        // Initialize database with lifecycleScope
+
         db = AppDatabase.getDatabase(this, lifecycleScope)
 
-        // Find views
+
         listView = findViewById(R.id.activeLaundryList)
         finishButton = findViewById(R.id.buttonLaundryFinish)
         backButton = findViewById(R.id.buttonBack)
         newJobOrderButton = findViewById(R.id.buttonNewJobOrder)
 
-        // Initially disable the "Finish Laundry" button
         finishButton.isEnabled = false
 
-        // Load active job orders
         loadActiveJobOrders()
 
-        // Set up button to start a new job order
         newJobOrderButton.setOnClickListener {
             startActivity(Intent(this@UserLaundry, NewJobOrder::class.java))
         }
 
-        // Set up "Finish Laundry" button functionality
         finishButton.setOnClickListener {
             selectedJobOrder?.let { jobOrder ->
                 lifecycleScope.launch(Dispatchers.IO) {
-                    // Mark the job as inactive
+
                     jobOrder.isActive = false
                     db.jobOrderDao().updateJobOrder(jobOrder)
 
-                    // Fetch the SMS message from the database
-                    val smsMessage = db.smsMessageDao().getSmsMessage() // Fetch the message from SmsMessage entity
-                    val message = smsMessage?.message ?: "Your laundry job has been completed!" // Default message if not found
 
-                    // Check and request SMS permission
+                    val smsMessage = db.smsMessageDao().getSmsMessage()
+                    val message = smsMessage?.message ?: "Your laundry job has been completed!"
+
                     if (ContextCompat.checkSelfPermission(this@UserLaundry, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
                         sendSmsNotification(jobOrder.customerPhone, message)
                     } else {
@@ -82,13 +77,12 @@ class UserLaundry : AppCompatActivity() {
             }
         }
 
-        // Set up "Back" button functionality
+
         backButton.setOnClickListener {
             startActivity(Intent(this@UserLaundry, UserDashboard::class.java))
         }
     }
 
-    // Load active job orders from the database
     private fun loadActiveJobOrders() {
         lifecycleScope.launch(Dispatchers.IO) {
             val activeJobs = db.jobOrderDao().getActiveJobOrders()
@@ -117,7 +111,6 @@ class UserLaundry : AppCompatActivity() {
         }
     }
 
-    // Send SMS notification
     private fun sendSmsNotification(phoneNumber: String?, message: String) {
         if (!phoneNumber.isNullOrEmpty()) {
             try {
@@ -131,17 +124,16 @@ class UserLaundry : AppCompatActivity() {
         }
     }
 
-    // Request SMS permission
     private fun requestSmsPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
     }
 
-    // Handle the result of the permission request
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == SMS_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, you can now send the SMS
+
                 selectedJobOrder?.let { jobOrder ->
                     lifecycleScope.launch(Dispatchers.IO) {
                         val smsMessage = db.smsMessageDao().getSmsMessage()

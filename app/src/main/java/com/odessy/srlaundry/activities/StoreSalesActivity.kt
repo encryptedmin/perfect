@@ -29,7 +29,7 @@ class StoreSalesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store_sales)
 
-        // Initialize views
+
         buttonDailySales = findViewById(R.id.buttonDailySales)
         buttonWeeklySales = findViewById(R.id.buttonWeeklySales)
         buttonMonthlySales = findViewById(R.id.buttonMonthlySales)
@@ -37,45 +37,45 @@ class StoreSalesActivity : AppCompatActivity() {
         textViewTotalSales = findViewById(R.id.textViewTotalSales)
         textViewDateRange = findViewById(R.id.textViewDateRange)
 
-        // Button click listeners
+
         buttonDailySales.setOnClickListener { fetchSalesData("daily") }
         buttonWeeklySales.setOnClickListener { fetchSalesData("weekly") }
         buttonMonthlySales.setOnClickListener { fetchSalesData("monthly") }
 
-        // Fetch daily sales by default when the activity opens
+
         fetchSalesData("daily")
     }
 
     private fun fetchSalesData(period: String) {
         val calendar = Calendar.getInstance()
         val startDate: Date
-        val endDate = Date()  // Current time
+        val endDate = Date()
 
         when (period) {
             "daily" -> {
-                // Set start of the day (00:00) for today's sales
+
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
                 calendar.set(Calendar.MINUTE, 0)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
-                startDate = calendar.time  // Start of today (00:00)
+                startDate = calendar.time
 
                 textViewDateRange.text = "Today's Sales"
             }
             "weekly" -> {
                 calendar.add(Calendar.DAY_OF_YEAR, -7)
-                startDate = calendar.time // One week ago
+                startDate = calendar.time
                 textViewDateRange.text = "Last 7 Days Sales"
             }
             "monthly" -> {
                 calendar.add(Calendar.MONTH, -1)
-                startDate = calendar.time // One month ago
+                startDate = calendar.time
                 textViewDateRange.text = "Last 30 Days Sales"
             }
             else -> return
         }
 
-        // Query Firestore for transactions within the selected period
+
         firestoreDb
             .whereGreaterThanOrEqualTo("timestamp", startDate)
             .whereLessThanOrEqualTo("timestamp", endDate)
@@ -84,7 +84,7 @@ class StoreSalesActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 val transactions = documents.toObjects(Transaction::class.java)
 
-                // Update ListView with sales records
+
                 val salesRecords = transactions.map {
                     "Product: ${it.productName}, Qty: ${it.quantity}, Total: ₱${it.totalPrice}"
                 }
@@ -95,12 +95,11 @@ class StoreSalesActivity : AppCompatActivity() {
                 )
                 listViewSalesRecords.adapter = adapter
 
-                // Calculate and display total sales
                 val totalSales = transactions.sumOf { it.totalPrice }
                 textViewTotalSales.text = "Total Sales: ₱${"%.2f".format(totalSales)}"
             }
             .addOnFailureListener { e ->
-                // Handle the error (e.g., show a toast)
+
                 e.printStackTrace()
             }
     }

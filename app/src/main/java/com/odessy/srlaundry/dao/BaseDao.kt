@@ -13,10 +13,8 @@ interface BaseDao<T> {
     @Delete
     suspend fun delete(entity: T)
 
-
     @Insert
     suspend fun insertAll(entities: List<T>)
-
 
     @Delete
     suspend fun deleteAll(entities: List<T>)
