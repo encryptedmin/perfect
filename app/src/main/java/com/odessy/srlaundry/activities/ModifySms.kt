@@ -18,29 +18,22 @@ class ModifySms : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_sms)
-
-        // Initialize the ViewModel
         smsMessageViewModel = ViewModelProvider(this).get(SmsMessageViewModel::class.java)
-
         smsMessageEditText = findViewById(R.id.smsMessageEditText)
         confirmButton = findViewById(R.id.confirmButton)
         cancelButton = findViewById(R.id.cancelButton)
-
-        // Confirm button click listener
         confirmButton.setOnClickListener {
             val smsMessage = smsMessageEditText.text.toString()
             if (smsMessage.isNotEmpty()) {
                 smsMessageViewModel.insertSmsMessage(smsMessage)
                 Toast.makeText(this, "SMS Message Saved", Toast.LENGTH_SHORT).show()
-                finish() // Close the activity
+                finish()
             } else {
                 Toast.makeText(this, "Please enter a message", Toast.LENGTH_SHORT).show()
             }
         }
-
-        // Cancel button click listener
         cancelButton.setOnClickListener {
-            finish() // Close the activity
+            finish()
         }
     }
 }

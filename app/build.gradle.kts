@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") version "4.4.2"
 }
 
 android {
@@ -60,5 +60,8 @@ dependencies {
     implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.play.services.base)
+    implementation(libs.play.services.auth)
+
 
 }

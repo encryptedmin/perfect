@@ -35,42 +35,32 @@ class NewCustomer : AppCompatActivity() {
         saveButton = findViewById(R.id.buttonSave)
         clearButton = findViewById(R.id.buttonClear)
         cancelButton = findViewById(R.id.buttonCancel)
-
-        // Save button functionality
         saveButton.setOnClickListener {
             val name = customerNameInput.text.toString().trim()
             val phone = customerPhoneInput.text.toString().trim()
-
             if (name.isNotEmpty() && phone.isNotEmpty()) {
                 lifecycleScope.launch(Dispatchers.IO) {
                     val newCustomer = Customer(name = name, phone = phone, promo = 0) // promo starts at 0
                     db.customerDao().insertCustomer(newCustomer)
                     runOnUiThread {
                         Toast.makeText(this@NewCustomer, "Customer added successfully!", Toast.LENGTH_SHORT).show()
-
-                        // Redirect back to new_job_order after saving
                         val intent = Intent(this@NewCustomer, NewJobOrder::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP // Ensures the previous activity isn't recreated
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                         startActivity(intent)
-                        finish() // Close the current activity
+                        finish()
                     }
                 }
             } else {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
-
-        // Clear button functionality
         clearButton.setOnClickListener {
             clearInputs()
         }
-
-        // Cancel button functionality
         cancelButton.setOnClickListener {
             startActivity(Intent(this@NewCustomer, NewJobOrder::class.java))
         }
     }
-
     private fun clearInputs() {
         customerNameInput.text.clear()
         customerPhoneInput.text.clear()

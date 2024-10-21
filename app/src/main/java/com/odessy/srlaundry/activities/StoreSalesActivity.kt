@@ -24,42 +24,31 @@ class StoreSalesActivity : AppCompatActivity() {
 
     private val firestoreDb = FirebaseFirestore.getInstance().collection("transactions")
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_store_sales)
-
-
         buttonDailySales = findViewById(R.id.buttonDailySales)
         buttonWeeklySales = findViewById(R.id.buttonWeeklySales)
         buttonMonthlySales = findViewById(R.id.buttonMonthlySales)
         listViewSalesRecords = findViewById(R.id.listViewSalesRecords)
         textViewTotalSales = findViewById(R.id.textViewTotalSales)
         textViewDateRange = findViewById(R.id.textViewDateRange)
-
-
         buttonDailySales.setOnClickListener { fetchSalesData("daily") }
         buttonWeeklySales.setOnClickListener { fetchSalesData("weekly") }
         buttonMonthlySales.setOnClickListener { fetchSalesData("monthly") }
-
-
         fetchSalesData("daily")
     }
-
     private fun fetchSalesData(period: String) {
         val calendar = Calendar.getInstance()
         val startDate: Date
         val endDate = Date()
-
         when (period) {
             "daily" -> {
-
                 calendar.set(Calendar.HOUR_OF_DAY, 0)
                 calendar.set(Calendar.MINUTE, 0)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
                 startDate = calendar.time
-
                 textViewDateRange.text = "Today's Sales"
             }
             "weekly" -> {
@@ -74,8 +63,6 @@ class StoreSalesActivity : AppCompatActivity() {
             }
             else -> return
         }
-
-
         firestoreDb
             .whereGreaterThanOrEqualTo("timestamp", startDate)
             .whereLessThanOrEqualTo("timestamp", endDate)
@@ -83,8 +70,6 @@ class StoreSalesActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 val transactions = documents.toObjects(Transaction::class.java)
-
-
                 val salesRecords = transactions.map {
                     "Product: ${it.productName}, Qty: ${it.quantity}, Total: ₱${it.totalPrice}"
                 }

@@ -134,17 +134,14 @@ class AdminEditLaundryPrice : AppCompatActivity() {
                     val detergent = document.getDouble("addOnDetergent") ?: 0.0
                     val fabricConditioner = document.getDouble("addOnFabricConditioner") ?: 0.0
                     val bleach = document.getDouble("addOnBleach") ?: 0.0
-
-                    // Update Room with Firestore prices
                     val firestorePrices = LaundryPrice(
-                        id = 1, // Assume only one set of prices for the app
+                        id = 1,
                         regular = regular,
                         bedSheet = bedSheet,
                         addOnDetergent = detergent,
                         addOnFabricConditioner = fabricConditioner,
                         addOnBleach = bleach
                     )
-
                     lifecycleScope.launch(Dispatchers.IO) {
                         db.laundryPriceDao().updatePrices(firestorePrices)
                         withContext(Dispatchers.Main) {
@@ -156,8 +153,6 @@ class AdminEditLaundryPrice : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to load prices from Firestore: ${e.message}", Toast.LENGTH_LONG).show()
             }
-
-        // Load prices from Room as a fallback
         lifecycleScope.launch(Dispatchers.IO) {
             currentPrices = db.laundryPriceDao().getLaundryPrice()
             currentPrices?.let {
@@ -167,7 +162,6 @@ class AdminEditLaundryPrice : AppCompatActivity() {
             }
         }
     }
-
     private fun populateCurrentPrices(prices: LaundryPrice) {
         currentRegularPrice.text = prices.regular.toString()
         currentBedSheetPrice.text = prices.bedSheet.toString()

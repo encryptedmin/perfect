@@ -13,14 +13,11 @@ class AdminSalesViewModel : ViewModel() {
     enum class FilterType {
         DAILY, WEEKLY, MONTHLY
     }
-
     private val firestore = FirebaseFirestore.getInstance()
     private val _salesRecords = MutableLiveData<List<LaundrySales>>()
     val salesRecords: LiveData<List<LaundrySales>> = _salesRecords
-
     fun fetchSalesData(filterType: FilterType) {
         val (startDate, endDate) = getDateRange(filterType)
-
         firestore.collection("laundry_sales")
             .whereGreaterThanOrEqualTo("transactionDate", startDate)
             .whereLessThanOrEqualTo("transactionDate", endDate)
@@ -36,7 +33,6 @@ class AdminSalesViewModel : ViewModel() {
                 Log.e("AdminSalesViewModel", "Error fetching sales data: ${exception.message}", exception)
             }
     }
-
     private fun getDateRange(filterType: FilterType): Pair<Date, Date> {
         val calendar = Calendar.getInstance()
         val endDate = calendar.time

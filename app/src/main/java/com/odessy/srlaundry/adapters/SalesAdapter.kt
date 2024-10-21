@@ -16,18 +16,15 @@ class SalesAdapter : ListAdapter<LaundrySales, SalesAdapter.SalesViewHolder>(Sal
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_sales_record, parent, false)
         return SalesViewHolder(view)
     }
-
     override fun onBindViewHolder(holder: SalesViewHolder, position: Int) {
         val salesRecord = getItem(position)
         holder.bind(salesRecord)
     }
-
     class SalesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvDate: TextView = itemView.findViewById(R.id.tv_sales_date)
         private val tvType: TextView = itemView.findViewById(R.id.tv_sales_type)
         private val tvLoads: TextView = itemView.findViewById(R.id.tv_sales_loads)
         private val tvTotalPrice: TextView = itemView.findViewById(R.id.tv_sales_price)
-
         fun bind(sales: LaundrySales) {
             tvDate.text = sales.transactionDate.toString()
             tvType.text = sales.laundryType
@@ -35,12 +32,10 @@ class SalesAdapter : ListAdapter<LaundrySales, SalesAdapter.SalesViewHolder>(Sal
             tvTotalPrice.text = "Total: ₱${sales.totalPrice}"
         }
     }
-
     class SalesDiffCallback : DiffUtil.ItemCallback<LaundrySales>() {
         override fun areItemsTheSame(oldItem: LaundrySales, newItem: LaundrySales): Boolean {
             return oldItem.id == newItem.id
         }
-
         override fun areContentsTheSame(oldItem: LaundrySales, newItem: LaundrySales): Boolean {
             return oldItem == newItem
         }

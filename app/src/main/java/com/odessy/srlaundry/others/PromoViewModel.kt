@@ -14,20 +14,14 @@ class PromoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val promoDao = AppDatabase.getDatabase(application, viewModelScope).promotionDao()
     private val firestoreDb = FirebaseFirestore.getInstance().collection("promotions")
-
-
     fun getPromo(): LiveData<Promotion?> {
         return promoDao.getPromo()
     }
-
-
     fun insertOrUpdatePromo(promotion: Promotion) {
         viewModelScope.launch(Dispatchers.IO) {
             promoDao.insertOrUpdatePromo(promotion)
         }
     }
-
-
     fun syncPromoFromFirestore() {
         viewModelScope.launch(Dispatchers.IO) {
             firestoreDb.document("currentPromo").get()
@@ -35,15 +29,11 @@ class PromoViewModel(application: Application) : AndroidViewModel(application) {
                     if (document.exists()) {
                         val serviceFrequency = document.getLong("serviceFrequency")?.toInt() ?: 1
                         val isPromoActive = document.getBoolean("isPromoActive") ?: false
-
-
                         val promotion = Promotion(
                             id = 1,
                             serviceFrequency = serviceFrequency,
                             isPromoActive = isPromoActive
                         )
-
-
                         viewModelScope.launch(Dispatchers.IO) {
                             promoDao.deleteAllPromos()
                             promoDao.insertOrUpdatePromo(promotion)

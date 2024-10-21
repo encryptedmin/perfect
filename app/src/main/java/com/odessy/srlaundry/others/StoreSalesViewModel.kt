@@ -14,7 +14,6 @@ class StoreSalesViewModel(private val context: Context) : ViewModel() {
 
     private val _transactions = MutableLiveData<List<Transaction>>()
     val transactions: LiveData<List<Transaction>> = _transactions
-
     fun loadTransactions(fromDate: Long? = null, toDate: Long? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             val db = AppDatabase.getDatabase(context, viewModelScope)

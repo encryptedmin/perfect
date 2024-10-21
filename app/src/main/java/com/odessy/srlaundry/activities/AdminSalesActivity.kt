@@ -23,40 +23,27 @@ class AdminSalesActivity : AppCompatActivity() {
     private val salesAdapter = SalesAdapter()
 
     private val adminSalesViewModel: AdminSalesViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_sales)
-
         initializeViews()
-
-        // Set up RecyclerView
         rvSalesRecords.layoutManager = LinearLayoutManager(this)
         rvSalesRecords.adapter = salesAdapter
-
-        // Observe LiveData from ViewModel to update the sales records
         adminSalesViewModel.salesRecords.observe(this, Observer { salesList ->
             salesAdapter.submitList(salesList)
             updateSalesTotal(salesList)
         })
-
-        // Automatically load today's sales data on activity start
         adminSalesViewModel.fetchSalesData(AdminSalesViewModel.FilterType.DAILY)
-
-        // Button listeners to fetch sales based on date range
         btnDailySales.setOnClickListener {
             adminSalesViewModel.fetchSalesData(AdminSalesViewModel.FilterType.DAILY)
         }
-
         btnWeeklySales.setOnClickListener {
             adminSalesViewModel.fetchSalesData(AdminSalesViewModel.FilterType.WEEKLY)
         }
-
         btnMonthlySales.setOnClickListener {
             adminSalesViewModel.fetchSalesData(AdminSalesViewModel.FilterType.MONTHLY)
         }
     }
-
     private fun initializeViews() {
         btnDailySales = findViewById(R.id.btn_daily_sales)
         btnWeeklySales = findViewById(R.id.btn_weekly_sales)
@@ -64,7 +51,6 @@ class AdminSalesActivity : AppCompatActivity() {
         tvSalesTotal = findViewById(R.id.tv_sales_total)
         rvSalesRecords = findViewById(R.id.rv_sales_records)
     }
-
     private fun updateSalesTotal(salesList: List<LaundrySales>) {
         val totalSales = salesList.sumOf { it.totalPrice }
         tvSalesTotal.text = "Total Sales: $%.2f".format(totalSales)

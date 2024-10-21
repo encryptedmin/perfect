@@ -9,14 +9,11 @@ class SyncManager(private val context: Context, private val scope: CoroutineScop
 
     private val firestoreDb = FirebaseFirestore.getInstance()
     private val db = AppDatabase.getDatabase(context, scope)
-
-    // Function to sync all data with Firestore
     suspend fun syncAllData() {
         syncJobOrders()
         syncLaundrySales()
         syncTransactions()
-        //syncSmsMessages()
-        syncStoreItems()    // Sync Store Items
+        syncStoreItems()
     }
 
     private suspend fun syncJobOrders() {
@@ -39,20 +36,10 @@ class SyncManager(private val context: Context, private val scope: CoroutineScop
             transaction.id.toString()
         }
     }
-
-
-    /*private suspend fun syncSmsMessages() {
-        val smsMessages = db.smsMessageDao().getAllSmsMessages()
-        syncDataToFirestore(firestoreDb.collection("sms_messages"), smsMessages) { message ->
-            message.id.toString()
-        }
-    }*/
-
-
     private suspend fun syncStoreItems() {
         val storeItems = db.storeItemDao().getAllStoreItemsSync()
         syncDataToFirestore(firestoreDb.collection("store_items"), storeItems) { item ->
-            item.productName // Use productName as the document ID in Firestore
+            item.productName
         }
     }
 }
