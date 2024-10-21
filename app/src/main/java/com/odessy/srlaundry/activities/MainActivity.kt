@@ -1,12 +1,17 @@
 package com.odessy.srlaundry.activities
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.firestore.FirebaseFirestore
@@ -29,6 +34,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var smsMessageViewModel: SmsMessageViewModel
     private lateinit var promoViewModel: PromoViewModel
     private val firestoreDb = FirebaseFirestore.getInstance()
+
+    // SMS Permission Request Code
+    private val SMS_PERMISSION_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         syncAccountsFromFirestoreToRoom()
         syncPromoFromFirestore()
         syncSmsMessagesFromFirestore()
+
+        // Request SMS permission at startup
+        requestSmsPermission()
 
         // Handle Login (Querying the database)
         loginButton.setOnClickListener {
@@ -88,6 +99,44 @@ class MainActivity : AppCompatActivity() {
 
         exitButton.setOnClickListener {
             finish()
+        }
+    }
+
+    // Function to request SMS permission
+    private fun requestSmsPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            // If the permission is not granted, check if we should show a rationale
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
+                // Show an explanation to the user
+                showPermissionRationaleDialog()
+            } else {
+                // Directly request the permission
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
+            }
+        }
+    }
+
+    // Dialog to explain why the SMS permission is needed
+    private fun showPermissionRationaleDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("SMS Permission Required")
+            .setMessage("This app needs SMS permission to send notifications to customers.")
+            .setPositiveButton("Grant") { _, _ ->
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    // Handle the result of the permission request
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == SMS_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "SMS permission granted!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "SMS permission denied. You won't be able to send SMS notifications.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 

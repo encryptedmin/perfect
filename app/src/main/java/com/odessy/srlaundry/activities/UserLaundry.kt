@@ -1,14 +1,11 @@
 package com.odessy.srlaundry.activities
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.odessy.srlaundry.R
@@ -31,7 +28,6 @@ class UserLaundry : AppCompatActivity() {
     private var selectedJobOrderView: View? = null
 
     private lateinit var db: AppDatabase
-    private val SMS_PERMISSION_CODE = 100
 
     private var jobOrderList = listOf<JobOrder>()
 
@@ -58,21 +54,15 @@ class UserLaundry : AppCompatActivity() {
         finishButton.setOnClickListener {
             selectedJobOrder?.let { jobOrder ->
                 lifecycleScope.launch(Dispatchers.IO) {
-
                     jobOrder.isActive = false
                     db.jobOrderDao().updateJobOrder(jobOrder)
 
                     val smsMessage = db.smsMessageDao().getSmsMessage()
                     val message = smsMessage?.message ?: "Your laundry job has been completed!"
 
-                    if (ContextCompat.checkSelfPermission(this@UserLaundry, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
-                        sendSmsNotification(jobOrder.customerPhone, message)
-                    } else {
-                        requestSmsPermission()
-                    }
-
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@UserLaundry, "Laundry Finished!", Toast.LENGTH_SHORT).show()
+                        sendSmsViaIntent(jobOrder.customerPhone, message)
+                        Toast.makeText(this@UserLaundry, "Laundry marked as finished!", Toast.LENGTH_SHORT).show()
                         finishButton.isEnabled = false
                         resetSelectedJobOrderView()
                         loadActiveJobOrders()
@@ -127,10 +117,9 @@ class UserLaundry : AppCompatActivity() {
         val adapter = ArrayAdapter(this@UserLaundry, android.R.layout.simple_list_item_1, jobOrderDetails)
         listView.adapter = adapter
 
-        listView.setOnItemClickListener { parent, view, position, id ->
+        listView.setOnItemClickListener { _, view, position, _ ->
             selectedJobOrder = jobOrders[position]
             finishButton.isEnabled = true
-
 
             resetSelectedJobOrderView()
             selectedJobOrderView = view
@@ -143,37 +132,20 @@ class UserLaundry : AppCompatActivity() {
         selectedJobOrderView = null
     }
 
-    private fun sendSmsNotification(phoneNumber: String?, message: String) {
+    // Send SMS using the default messaging app
+    private fun sendSmsViaIntent(phoneNumber: String?, message: String) {
         if (!phoneNumber.isNullOrEmpty()) {
+            val smsIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("smsto:$phoneNumber")  // Sets the recipient phone number
+                putExtra("sms_body", message)  // Pre-fills the message body
+            }
             try {
-                val smsManager = SmsManager.getDefault()
-                smsManager.sendTextMessage(phoneNumber, null, message, null, null)
+                startActivity(smsIntent)
             } catch (e: Exception) {
-                Toast.makeText(this, "Failed to send SMS: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Failed to open SMS app: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(this, "Invalid phone number", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun requestSmsPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SMS_PERMISSION_CODE)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == SMS_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectedJobOrder?.let { jobOrder ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val smsMessage = db.smsMessageDao().getSmsMessage()
-                        val message = smsMessage?.message ?: "Your laundry job has been completed!"
-                        sendSmsNotification(jobOrder.customerPhone, message)
-                    }
-                }
-            } else {
-                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }
