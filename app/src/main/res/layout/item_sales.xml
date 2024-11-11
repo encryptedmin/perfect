@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvLaundryType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Laundry Type" />
+
+    <TextView
+        android:id="@+id/tvAddOns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add-Ons: " />
+
+    <TextView
+        android:id="@+id/tvWeight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weight: 0 kg" />
+
+    <TextView
+        android:id="@+id/tvLoads"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loads: 0" />
+
+    <TextView
+        android:id="@+id/tvTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Price: ₱0.00" />
+
+    <TextView
+        android:id="@+id/tvTransactionDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date: YYYY-MM-DD" />
+</LinearLayout>

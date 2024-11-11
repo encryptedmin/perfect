@@ -4,55 +4,65 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.odessy.srlaundry.entities.LaundrySales
 import java.util.*
 
 class AdminSalesViewModel : ViewModel() {
 
-    enum class FilterType {
-        DAILY, WEEKLY, MONTHLY
-    }
-    private val firestore = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     private val _salesRecords = MutableLiveData<List<LaundrySales>>()
-    val salesRecords: LiveData<List<LaundrySales>> = _salesRecords
-    fun fetchSalesData(filterType: FilterType) {
-        val (startDate, endDate) = getDateRange(filterType)
-        firestore.collection("laundry_sales")
-            .whereGreaterThanOrEqualTo("transactionDate", startDate)
-            .whereLessThanOrEqualTo("transactionDate", endDate)
+    val salesRecords: LiveData<List<LaundrySales>> get() = _salesRecords
+
+    fun fetchSalesData(startDate: Date, endDate: Date) {
+        Log.d("FirestoreQuery", "Fetching data from $startDate to $endDate")
+        db.collection("laundry_sales")
+            .whereGreaterThanOrEqualTo("transactionDate", Timestamp(startDate))
+            .whereLessThanOrEqualTo("transactionDate", Timestamp(endDate))
+            .orderBy("transactionDate", Query.Direction.ASCENDING)
             .get()
-            .addOnSuccessListener { result ->
-                val salesList = result.toObjects(LaundrySales::class.java)
-                if (salesList.isNullOrEmpty()) {
-                    Log.d("AdminSalesViewModel", "No sales records found for selected period.")
+            .addOnSuccessListener { documents ->
+                val salesList = documents.map { doc ->
+                    // Manually map Firestore fields to the LaundrySales entity
+                    LaundrySales(
+                        id = 0, // Room will auto-generate this if you later insert it
+                        transactionDate = doc.getTimestamp("transactionDate")?.toDate() ?: Date(),
+                        laundryType = doc.getString("laundryType") ?: "",
+                        weight = doc.getDouble("weight") ?: 0.0,
+                        loads = doc.getLong("loads")?.toInt() ?: 0,
+                        addOnDetergent = doc.getLong("addOnDetergent")?.toInt() ?: 0,
+                        addOnFabricConditioner = doc.getLong("addOnFabricConditioner")?.toInt() ?: 0,
+                        addOnBleach = doc.getLong("addOnBleach")?.toInt() ?: 0,
+                        totalPrice = doc.getDouble("totalPrice") ?: 0.0
+                    )
                 }
                 _salesRecords.value = salesList
+                Log.d("Firestore", "Fetched ${salesList.size} records.")
             }
-            .addOnFailureListener { exception: Exception ->
-                Log.e("AdminSalesViewModel", "Error fetching sales data: ${exception.message}", exception)
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error fetching data: ", exception)
             }
     }
-    private fun getDateRange(filterType: FilterType): Pair<Date, Date> {
-        val calendar = Calendar.getInstance()
-        val endDate = calendar.time
-        val startDate: Date = when (filterType) {
-            FilterType.DAILY -> {
-                calendar.set(Calendar.HOUR_OF_DAY, 0)
-                calendar.set(Calendar.MINUTE, 0)
-                calendar.set(Calendar.SECOND, 0)
-                calendar.set(Calendar.MILLISECOND, 0)
-                calendar.time
-            }
-            FilterType.WEEKLY -> {
-                calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
-                calendar.time
-            }
-            FilterType.MONTHLY -> {
-                calendar.set(Calendar.DAY_OF_MONTH, 1)
-                calendar.time
-            }
-        }
-        return Pair(startDate, endDate)
+
+    fun getStartOfDay(date: Date): Date {
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+    }
+
+    fun getEndOfDay(date: Date): Date {
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.time
     }
 }
