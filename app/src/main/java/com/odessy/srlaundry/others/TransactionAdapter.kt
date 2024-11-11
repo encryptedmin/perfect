@@ -1,4 +1,4 @@
-package com.odessy.srlaundry.adapters
+package com.odessy.srlaundry.others
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +13,7 @@ import java.util.*
 class TransactionAdapter(private val transactions: List<Transaction>) :
     RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>() {
 
-    class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val productName: TextView = view.findViewById(R.id.productName)
-        val quantity: TextView = view.findViewById(R.id.quantity)
-        val totalPrice: TextView = view.findViewById(R.id.totalPrice)
-        val timestamp: TextView = view.findViewById(R.id.timestamp)
-    }
+    private val dateFormatter = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,18 +22,22 @@ class TransactionAdapter(private val transactions: List<Transaction>) :
     }
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        val transaction = transactions[position]
-
-        holder.productName.text = transaction.productName
-        holder.quantity.text = "Quantity: ${transaction.quantity}"
-        holder.totalPrice.text = "Total: ₱${transaction.totalPrice}"
-
-        // Format timestamp to a readable date
-        val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.getDefault())
-        holder.timestamp.text = "Timestamp: ${dateFormat.format(transaction.timestamp)}"
+        holder.bind(transactions[position])
     }
 
-    override fun getItemCount(): Int {
-        return transactions.size
+    override fun getItemCount(): Int = transactions.size
+
+    inner class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val textViewProductName: TextView = itemView.findViewById(R.id.productName)
+        private val textViewQuantity: TextView = itemView.findViewById(R.id.quantity)
+        private val textViewTotalPrice: TextView = itemView.findViewById(R.id.totalPrice)
+        private val textViewTimestamp: TextView = itemView.findViewById(R.id.timestamp)
+
+        fun bind(transaction: Transaction) {
+            textViewProductName.text = transaction.productName
+            textViewQuantity.text = "Quantity: ${transaction.quantity}"
+            textViewTotalPrice.text = "Total: ₱%.2f".format(transaction.totalPrice)
+            textViewTimestamp.text = "Timestamp: ${dateFormatter.format(transaction.timestamp)}"
+        }
     }
 }

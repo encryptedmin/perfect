@@ -106,7 +106,7 @@ class AdminSalesActivity : AppCompatActivity() {
         DatePickerDialog(
             this,
             { _, year, month, _ ->
-                calendar.set(year, month, 1) // Set to the first day of the selected month
+                calendar.set(year, month, 1)
                 onMonthSelected(calendar.time)
             },
             calendar.get(Calendar.YEAR),
@@ -122,7 +122,7 @@ class AdminSalesActivity : AppCompatActivity() {
     private fun getStartOfWeek(date: Date): Date {
         return Calendar.getInstance().apply {
             time = date
-            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY) // Set to Sunday of the selected week
+            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
             set(Calendar.HOUR_OF_DAY, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)

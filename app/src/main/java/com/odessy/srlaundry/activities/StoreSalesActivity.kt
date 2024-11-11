@@ -2,22 +2,28 @@ package com.odessy.srlaundry.activities
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.odessy.srlaundry.R
-import com.odessy.srlaundry.adapters.TransactionAdapter
+import com.odessy.srlaundry.others.TransactionAdapter
 import com.odessy.srlaundry.others.StoreSalesViewModel
+import com.odessy.srlaundry.others.StoreSalesViewModelFactory
+import java.text.SimpleDateFormat
 import java.util.*
 
 class StoreSalesActivity : AppCompatActivity() {
 
-    private lateinit var storeSalesViewModel: StoreSalesViewModel
     private lateinit var textViewTotalSales: TextView
+    private lateinit var textViewDateRange: TextView
     private lateinit var recyclerViewSalesRecords: RecyclerView
+    private val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
+    private val storeSalesViewModel: StoreSalesViewModel by viewModels { StoreSalesViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,97 +33,88 @@ class StoreSalesActivity : AppCompatActivity() {
         val buttonWeeklySales: Button = findViewById(R.id.buttonWeeklySales)
         val buttonMonthlySales: Button = findViewById(R.id.buttonMonthlySales)
         textViewTotalSales = findViewById(R.id.textViewTotalSales)
+        textViewDateRange = findViewById(R.id.textViewDateRange)
         recyclerViewSalesRecords = findViewById(R.id.recyclerViewSalesRecords)
-
-        // Setup RecyclerView
         recyclerViewSalesRecords.layoutManager = LinearLayoutManager(this)
 
-        storeSalesViewModel = ViewModelProvider(this).get(StoreSalesViewModel::class.java)
-
-        // Daily sales with date picker
         buttonDailySales.setOnClickListener {
             showDatePickerDialog { year, month, day ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(year, month, day)
                 storeSalesViewModel.loadDailySales(selectedDate.time)
+                textViewDateRange.text = "Daily Sales: ${dateFormatter.format(selectedDate.time)}"
             }
         }
 
-        // Weekly sales with date range picker (start date only)
         buttonWeeklySales.setOnClickListener {
             showDatePickerDialog { year, month, day ->
-                val startDate = Calendar.getInstance()
-                startDate.set(year, month, day)
-
-                // Calculate the Sunday and Saturday of the week
-                val weekStart = getStartOfWeek(startDate)
-                val weekEnd = getEndOfWeek(startDate)
-
-                storeSalesViewModel.loadWeeklySales(weekStart.time, weekEnd.time)
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, month, day)
+                storeSalesViewModel.loadWeeklySales(selectedDate.time)
+                textViewDateRange.text = "Weekly Sales: ${dateFormatter.format(getStartOfWeek(selectedDate).time)} - ${dateFormatter.format(getEndOfWeek(selectedDate).time)}"
             }
         }
 
-        // Monthly sales by selecting the first day of the month
         buttonMonthlySales.setOnClickListener {
             showMonthPickerDialog { year, month ->
-                storeSalesViewModel.loadMonthlySales(year, month)
+                val selectedDate = Calendar.getInstance().apply {
+                    set(year, month, 1)
+                }
+                storeSalesViewModel.loadMonthlySales(selectedDate.time)
+                textViewDateRange.text = "Monthly Sales: ${SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(selectedDate.time)}"
             }
         }
 
-        // Observe ViewModel LiveData for sales records and total sales
-        storeSalesViewModel.totalSales.observe(this, { total ->
-            textViewTotalSales.text = "Total Sales: ₱$total"
-        })
+        storeSalesViewModel.totalSales.observe(this) { total ->
+            textViewTotalSales.text = "Total Sales: ₱%.2f".format(total)
+        }
 
-        storeSalesViewModel.salesRecords.observe(this, { salesRecords ->
-            // Update RecyclerView with sales records
-            val adapter = TransactionAdapter(salesRecords)
-            recyclerViewSalesRecords.adapter = adapter
-        })
+        storeSalesViewModel.salesRecords.observe(this) { salesRecords ->
+            recyclerViewSalesRecords.adapter = TransactionAdapter(salesRecords)
+        }
     }
 
-    // Helper function to calculate the start (Sunday) of the week
     private fun getStartOfWeek(calendar: Calendar): Calendar {
-        val weekStart = calendar.clone() as Calendar
-        weekStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
-        return weekStart
+        return calendar.apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
     }
 
-    // Helper function to calculate the end (Saturday) of the week
     private fun getEndOfWeek(calendar: Calendar): Calendar {
-        val weekEnd = calendar.clone() as Calendar
-        weekEnd.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
-        return weekEnd
+        return calendar.apply {
+            set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }
     }
 
-    // Show DatePickerDialog for daily and weekly date selection
     private fun showDatePickerDialog(onDateSet: (year: Int, month: Int, day: Int) -> Unit) {
         val calendar = Calendar.getInstance()
         DatePickerDialog(
             this,
-            { _, year, month, dayOfMonth ->
-                onDateSet(year, month, dayOfMonth)
-            },
+            { _, year, month, dayOfMonth -> onDateSet(year, month, dayOfMonth) },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         ).show()
     }
 
-    // Show DatePickerDialog for monthly selection (will always pick the first day of the selected month)
     private fun showMonthPickerDialog(onMonthSet: (year: Int, month: Int) -> Unit) {
         val calendar = Calendar.getInstance()
-
-        // Use DatePickerDialog to let the user select the first day of the month
         DatePickerDialog(
             this,
-            { _, year, month, _ ->
-                // Always set the day to 1 (start of the selected month)
-                onMonthSet(year, month)
-            },
+            { _, year, month, _ -> onMonthSet(year, month) },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            1  // Default day is 1
-        ).show()
+            1
+        ).apply {
+            datePicker.findViewById<View>(resources.getIdentifier("day", "id", "android"))?.visibility = View.GONE
+        }.show()
     }
 }
