@@ -25,9 +25,9 @@ class AdminSalesViewModel : ViewModel() {
             .get()
             .addOnSuccessListener { documents ->
                 val salesList = documents.map { doc ->
-                    // Manually map Firestore fields to the LaundrySales entity
+
                     LaundrySales(
-                        id = 0, // Room will auto-generate this if you later insert it
+                        id = 0,
                         transactionDate = doc.getTimestamp("transactionDate")?.toDate() ?: Date(),
                         laundryType = doc.getString("laundryType") ?: "",
                         weight = doc.getDouble("weight") ?: 0.0,
