@@ -35,14 +35,12 @@ class AdminSalesActivity : AppCompatActivity() {
         rvSalesRecords.layoutManager = LinearLayoutManager(this)
         rvSalesRecords.adapter = salesAdapter
 
-        // Observe data updates from the ViewModel
         adminSalesViewModel.salesRecords.observe(this) { salesList ->
             Log.d("AdminSalesActivity", "Sales list updated with ${salesList.size} items.")
             salesAdapter.submitList(salesList)
             updateSalesTotal(salesList)
         }
 
-        // Listener for tab selection to update filter label
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 updateFilterLabel(tab?.position ?: 0)
@@ -51,24 +49,20 @@ class AdminSalesActivity : AppCompatActivity() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        // Listener for btnSelectDate to show different date pickers based on tab
         btnSelectDate.setOnClickListener {
-            val selectedTab = tabLayout.selectedTabPosition
-            when (selectedTab) {
-                0 -> showDatePicker { date -> // Daily Tab
+            when (tabLayout.selectedTabPosition) {
+                0 -> showDatePicker { date -> // Daily
                     adminSalesViewModel.fetchSalesData(
                         adminSalesViewModel.getStartOfDay(date),
                         adminSalesViewModel.getEndOfDay(date)
                     )
                 }
-                1 -> showDatePicker { startDate -> // Weekly Tab
-                    val endDate = Calendar.getInstance().apply {
-                        time = startDate
-                        add(Calendar.DAY_OF_MONTH, 6) // One week from selected date
-                    }.time
-                    adminSalesViewModel.fetchSalesData(startDate, endDate)
+                1 -> showDatePicker { selectedDate -> // Weekly
+                    val weekStart = getStartOfWeek(selectedDate) // Sunday
+                    val weekEnd = getEndOfWeek(selectedDate) // Saturday
+                    adminSalesViewModel.fetchSalesData(weekStart, weekEnd)
                 }
-                2 -> showMonthPicker { selectedMonth -> // Monthly Tab
+                2 -> showMonthPicker { selectedMonth -> // Monthly
                     val endOfMonth = Calendar.getInstance().apply {
                         time = selectedMonth
                         set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
@@ -119,11 +113,32 @@ class AdminSalesActivity : AppCompatActivity() {
             calendar.get(Calendar.MONTH),
             calendar.get(Calendar.DAY_OF_MONTH)
         ).apply {
-            // Hide the day picker to allow only month selection
             datePicker.findViewById<View>(
                 resources.getIdentifier("day", "id", "android")
             )?.visibility = View.GONE
         }.show()
+    }
+
+    private fun getStartOfWeek(date: Date): Date {
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY) // Set to Sunday of the selected week
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+    }
+
+    private fun getEndOfWeek(date: Date): Date {
+        return Calendar.getInstance().apply {
+            time = date
+            set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY) // Set to Saturday of the selected week
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.time
     }
 
     private fun updateSalesTotal(salesList: List<LaundrySales>) {

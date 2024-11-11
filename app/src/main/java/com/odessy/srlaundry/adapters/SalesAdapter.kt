@@ -46,8 +46,8 @@ class SalesAdapter : RecyclerView.Adapter<SalesAdapter.SalesViewHolder>() {
             tvLoads.text = "Loads: ${sale.loads}"
             tvTotalPrice.text = "Total Price: ₱${String.format("%.2f", sale.totalPrice)}"
 
-            // Convert transactionDate from Date to formatted string
-            val date = sale.transactionDate // Ensure this is of type Date
+
+            val date = sale.transactionDate
             val formattedDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(date)
             tvTransactionDate.text = formattedDate
         }
