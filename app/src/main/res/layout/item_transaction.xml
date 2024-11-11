@@ -26,4 +26,12 @@
         android:layout_height="wrap_content"
         android:text="Total: ₱0.00"
         android:textSize="14sp"/>
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timestamp: 00/00/0000"
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray" />
 </LinearLayout>

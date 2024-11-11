@@ -8,7 +8,7 @@ class StoreSalesViewModelFactory(private val context: Context) : ViewModelProvid
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(StoreSalesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return StoreSalesViewModel(context) as T
+            return StoreSalesViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
