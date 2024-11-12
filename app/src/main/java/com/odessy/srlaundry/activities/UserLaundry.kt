@@ -26,6 +26,7 @@ class UserLaundry : AppCompatActivity() {
     private lateinit var searchBar: EditText
     private var selectedJobOrder: JobOrder? = null
     private var selectedJobOrderView: View? = null
+    private lateinit var buttonCreateNewCustomer: Button
 
     private lateinit var db: AppDatabase
     private var jobOrderList = listOf<JobOrder>()
@@ -36,6 +37,7 @@ class UserLaundry : AppCompatActivity() {
         listView = findViewById(R.id.activeLaundryList)
         finishButton = findViewById(R.id.buttonLaundryFinish)
         backButton = findViewById(R.id.buttonBack)
+        buttonCreateNewCustomer = findViewById(R.id.buttonCreateNewCustomer)
         newJobOrderButton = findViewById(R.id.buttonNewJobOrder)
         searchBar = findViewById(R.id.searchBar)
         finishButton.isEnabled = false
@@ -62,6 +64,9 @@ class UserLaundry : AppCompatActivity() {
         }
         backButton.setOnClickListener {
             startActivity(Intent(this@UserLaundry, UserDashboard::class.java))
+        }
+        buttonCreateNewCustomer.setOnClickListener {
+            startActivity(Intent(this@UserLaundry, NewCustomer::class.java))
         }
 
         searchBar.addTextChangedListener(object : android.text.TextWatcher {

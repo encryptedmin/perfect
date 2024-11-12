@@ -58,7 +58,7 @@ class NewCustomer : AppCompatActivity() {
             clearInputs()
         }
         cancelButton.setOnClickListener {
-            startActivity(Intent(this@NewCustomer, NewJobOrder::class.java))
+            startActivity(Intent(this@NewCustomer, UserLaundry::class.java))
         }
     }
     private fun clearInputs() {

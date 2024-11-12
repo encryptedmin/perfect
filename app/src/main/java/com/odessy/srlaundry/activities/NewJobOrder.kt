@@ -21,7 +21,7 @@ class NewJobOrder : AppCompatActivity() {
 
     private lateinit var searchCustomerBar: EditText
     private lateinit var customerListView: ListView
-    private lateinit var buttonCreateNewCustomer: Button
+
     private lateinit var radioGroupLaundryType: RadioGroup
     private lateinit var inputLaundryWeight: EditText
     private lateinit var textTotalPrice: TextView
@@ -53,7 +53,7 @@ class NewJobOrder : AppCompatActivity() {
     private fun initializeViews() {
         searchCustomerBar = findViewById(R.id.searchCustomerBar)
         customerListView = findViewById(R.id.customerListView)
-        buttonCreateNewCustomer = findViewById(R.id.buttonCreateNewCustomer)
+
         radioGroupLaundryType = findViewById(R.id.radioGroupLaundryType)
         inputLaundryWeight = findViewById(R.id.inputLaundryWeight)
         textTotalPrice = findViewById(R.id.textTotalPrice)
@@ -99,9 +99,6 @@ class NewJobOrder : AppCompatActivity() {
         })
     }
     private fun setupButtonFunctions() {
-        buttonCreateNewCustomer.setOnClickListener {
-            startActivity(Intent(this@NewJobOrder, NewCustomer::class.java))
-        }
         buttonCancel.setOnClickListener {
             startActivity(Intent(this@NewJobOrder, UserLaundry::class.java))
         }

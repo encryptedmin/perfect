@@ -15,14 +15,28 @@
         android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_corner" />
 
+
     <Button
         android:id="@+id/buttonNewJobOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Job Order"
         android:layout_below="@id/searchBar"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:padding="12dp"/>
+
+
+    <Button
+        android:id="@+id/buttonCreateNewCustomer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New Customer"
+        android:layout_below="@id/searchBar"
+        android:layout_toEndOf="@id/buttonNewJobOrder"
         android:backgroundTint="#4CAF50"
         android:textColor="@android:color/white"
         android:textStyle="bold"
@@ -41,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/buttonBack"
+        android:layout_toEndOf="@id/buttonBack"
         android:text="Finish Laundry"
         android:backgroundTint="#2196F3"
         android:textColor="@android:color/white"
