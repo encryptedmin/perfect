@@ -34,7 +34,7 @@
         android:id="@+id/buttonCreateNewCustomer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Customer"
+        android:text="Customer Data"
         android:layout_below="@id/searchBar"
         android:layout_toEndOf="@id/buttonNewJobOrder"
         android:backgroundTint="#4CAF50"

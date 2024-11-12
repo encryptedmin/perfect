@@ -4,8 +4,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "Customer")
 data class Customer(@PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    val phone: String,
+    var name: String,
+    var phone: String,
     var promo: Int = 0
 )
 {
